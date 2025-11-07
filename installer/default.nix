@@ -3,25 +3,35 @@
   _file = ./default.nix;
 
   flake = {
-    nixosConfigurations = {
-      nixos-installer = lib.nixosSystem {
-        modules = [
-          ./configuration.nix
-          {
-            nixpkgs = {
-              hostPlatform = "x86_64-linux";
-            };
-          }
-        ];
+    nixosConfigurations =
+      let
+        nixos-installer =
+          hostPlatform:
+          lib.nixosSystem {
+            modules = [
+              ./configuration.nix
+              {
+                nixpkgs = {
+                  inherit hostPlatform;
+                };
+              }
+            ];
+          };
+      in
+      {
+        nixos-installer-aarch64 = nixos-installer "aarch64-linux";
+        nixos-installer-x86_64 = nixos-installer "x86_64-linux";
       };
-    };
   };
 
   perSystem =
     { pkgs, ... }:
     {
       packages = {
-        nixos-installer = self.nixosConfigurations.nixos-installer.config.system.build.isoImage;
+        nixos-installer-aarch64 =
+          self.nixosConfigurations.nixos-installer-aarch64.config.system.build.isoImage;
+        nixos-installer-x86_64 =
+          self.nixosConfigurations.nixos-installer-x86_64.config.system.build.isoImage;
       };
     };
 }
