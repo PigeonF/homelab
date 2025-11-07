@@ -1,6 +1,6 @@
 version = 1
 
 [[annotations]]
-path = [".editorconfig", "hosts/**"]
+path = [".editorconfig", "flake.lock", "flake.nix", "hosts/**"]
 SPDX-FileCopyrightText = "Jonas Fierlings <fnoegip@gmail.com>"
 SPDX-License-Identifier = "0BSD"
