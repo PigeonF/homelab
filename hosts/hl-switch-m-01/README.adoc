@@ -1,0 +1,87 @@
+= _hl-switch-m-01_
+Jonas Fierlings <https://github.com/PigeonF[@PigeonF]>;
+// settings:
+:experimental:
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+// URLs:
+:uci: https://openwrt.org/docs/guide-user/base-system/uci
+
+_hl-switch-m-01_ is a managed https://www.teltonika-networks.com/products/ethernet-switches/tsw202[TSW202] switch from Teltonika.
+
+== Bootstrapping
+
+Follow the https://wiki.teltonika-networks.com/view/QSG_TSW202[TSW202 Quick start guide] before hooking the device up to power.
+Make note of the credentials that are printed on the bottom of the switch (username and password for the web management interface).
+
+Once the switch has booted,
+the web interface is available at `192.168.1.2/24`,
+as well as through an IP address obtained via DHCPv4 or DHCPv6 if available.
+
+Before changing the configuration of the switch,
+make sure to https://wiki.teltonika-networks.com/view/TSW202_Firmware_Downloads[download the latest firmware].
+
+Login to the web interface using the credentials from the bottom of the switch.
+The firmware can be updated via menu:System[Firmware > Update Firmware].
+
+== Configuration
+
+The configuration of the switch is backed up as a {uci}[UCI configuration file].
+The settings are exported using `uci export`,
+and can be imported using `uci import`.
+
+The easiest way to make this work is to enable SSH access to the switch.
+Use the web interface to ensure SSH access is enabled at menu:System[Administration > Access Control].
+Edit the *Advanced Settings* to enable either password based or key based SSH access.
+
+NOTE: The username for SSH access is `root`.footnote:[This is in contrast to the web interface, where the username is `admin` instead.]
+
+=== Applying the configuration
+
+The easiest way to apply the configuration is to upload the latest {uci}[UCI] configuration file to the switch.
+The configuration can then be applied using `uci import`.
+
+[WARNING]
+====
+The configuration format can change between firmware version.
+Make sure the firmware version of the configuration file matches the firmware version installed on the device.
+
+.Find the firmware version of the configuration file
+[source,console]
+----
+$ grep 'device_fw_version' backup-*.uci
+    option device_fw_version 'TSW2_R_00.01.07.1'
+----
+
+.Determine the firmware version on the switch
+[source,console]
+----
+root@hl-switch-m-01 $ uci show system.system.device_fw_version
+system.system.device_fw_version='TSW2_R_00.01.07.1'
+----
+====
+
+.Upload and apply the {uci}[UCI] configuration
+[source,console]
+----
+$ scp backup-*.uci 'hl-switch-m-01:~/configuration.uci'
+$ ssh hl-switch-m-01 'uci import < configuration.uci'
+----
+
+=== Backup up the current configuration
+
+Export the current configuration using {uci}[UCI] and copy the backup to the repository.
+
+.Copy and download the {uci}[UCI] configuration
+[source,console]
+----
+$ ssh hl-switch-m-01 'uci export > "backup-hl-switch-m-01-$(date -u -I).uci"'
+$ scp 'hl-switch-m-01:~/backup-*.uci' .
+----
