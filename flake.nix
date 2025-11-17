@@ -27,6 +27,7 @@
 
         imports = [
           ./installer
+          ./hosts/hl-vhost-x-01
         ];
 
         flake = { };

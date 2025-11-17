@@ -1,0 +1,21 @@
+= _hl-vhost-x-01_
+Jonas Fierlings <https://github.com/PigeonF[@PigeonF]>;
+// settings:
+:experimental:
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+// URLs:
+
+_hl-vhost-x-01_ is a bare-metal x86_64 server that is used to host different virtual machines.
+The host device is a https://www.bee-link.com/products/beelink-eqi13-pro[Beelink EQi13 Pro] with an Intel Core i7 13620H, 32GB of RAM, and a 1TB SSD.
+
+== Bootstrapping
+
+Follow the https://nixos.wiki/wiki/NixOS_Installation_Guide[NixOS Installation Guide].
