@@ -34,6 +34,16 @@ _: {
   systemd = {
     network = {
       enable = true;
+      networks = {
+        "40-wlp172s0" = {
+          matchConfig = {
+            Name = "wlp172s0";
+          };
+          linkConfig = {
+            Unmanaged = true;
+          };
+        };
+      };
     };
   };
 
