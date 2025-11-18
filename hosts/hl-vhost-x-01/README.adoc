@@ -30,5 +30,5 @@ Use {url-nixos-anywhere}[`nixos-anywhere`] to install the NixOS configuration.
 .Install the NixOS configuration with {url-nixos-anywhere}[`nixos-anywhere`].
 [source,console]
 ----
-$ SSHPASS=root nix run github:nix-community/nixos-anywhere -- --flake '.#hl-vhost-x-01' --target-host root@nixos-installer.fritz.box --env-password
+$ SSHPASS=root nix run github:nix-community/nixos-anywhere -- --flake '.#hl-vhost-x-01' --target-host root@nixos-installer.fritz.box --env-password --generate-hardware-config nixos-facter ./facter.json
 ----

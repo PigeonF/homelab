@@ -11,6 +11,7 @@
     systemPackages = [
       pkgs.disko
       pkgs.jq
+      pkgs.nixos-facter
       pkgs.nixos-install-tools
       pkgs.rsync
     ];

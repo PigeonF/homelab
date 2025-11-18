@@ -1,14 +1,29 @@
 _: {
   imports = [
     ./disko.nix
-    ./hardware-configuration.nix
+    { config.facter.reportPath = ./facter.json; }
   ];
+
+  boot = {
+    loader = {
+      efi = {
+        canTouchEfiVariables = true;
+      };
+      systemd-boot = {
+        enable = true;
+      };
+    };
+  };
 
   networking = {
     domain = "internal";
     hostId = "5ee11178";
     hostName = "hl-vhost-x-01";
     useNetworkd = true;
+  };
+
+  system = {
+    stateVersion = "25.11";
   };
 
   systemd = {

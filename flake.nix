@@ -13,6 +13,9 @@
       url = "github:hercules-ci/flake-parts?ref=refs/heads/main";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
+    nixos-facter-modules = {
+      url = "github:nix-community/nixos-facter-modules?ref=refs/heads/main";
+    };
   };
 
   outputs =

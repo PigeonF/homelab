@@ -11,15 +11,8 @@
       hl-vhost-x-01 = lib.nixosSystem {
         modules = [
           self.inputs.disko.nixosModules.disko
+          self.inputs.nixos-facter-modules.nixosModules.facter
           ./configuration.nix
-          {
-            nixpkgs = {
-              hostPlatform = "x86_64-linux";
-            };
-            system = {
-              stateVersion = "25.11";
-            };
-          }
         ];
       };
     };
