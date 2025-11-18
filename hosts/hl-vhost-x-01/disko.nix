@@ -1,6 +1,7 @@
-{ ... }:
+{ pkgs, ... }:
 let
   zpool = "zroot";
+  rootVolume = "local/root";
 in
 {
   disko = {
@@ -23,10 +24,18 @@ in
                 };
               };
               zfs = {
-                size = "100%";
+                end = "-48G";
                 content = {
                   type = "zfs";
                   pool = zpool;
+                };
+              };
+              swap = {
+                size = "100%";
+                content = {
+                  type = "swap";
+                  discardPolicy = "both";
+                  resumeDevice = true;
                 };
               };
             };
@@ -66,14 +75,78 @@ in
               mountpoint = "/nix";
               options."com.sun:auto-snapshot" = "false";
             };
-            "local/root" = {
+            "local/persist" = {
+              type = "zfs_fs";
+              mountpoint = "/persist";
+              options."com.sun:auto-snapshot" = "false";
+            };
+            "${rootVolume}" = {
               type = "zfs_fs";
               mountpoint = "/";
+              postCreateHook = "zfs snapshot ${zpool}/${rootVolume}@start";
               options."com.sun:auto-snapshot" = "false";
             };
           };
         };
       };
+    };
+  };
+
+  boot = {
+    initrd = {
+      systemd = {
+        services = {
+          initrd-rollback-root = {
+            after = [ "zfs-import-${zpool}.service" ];
+            wantedBy = [ "initrd.target" ];
+            before = [
+              "sysroot.mount"
+            ];
+            path = [ pkgs.zfs ];
+            description = "Rollback root fs";
+            unitConfig.DefaultDependencies = "no";
+            serviceConfig.Type = "oneshot";
+            script = "zfs rollback -r ${zpool}/${rootVolume}@start && echo 'zfs rollback complete'";
+          };
+        };
+      };
+    };
+  };
+
+  environment = {
+    persistence = {
+      "/persist" = {
+        hideMounts = true;
+        directories = [
+          "/var/log"
+          "/var/lib"
+        ];
+        files = [
+          "/etc/machine-id"
+        ];
+      };
+    };
+  };
+
+  fileSystems = {
+    "/persist" = {
+      neededForBoot = true;
+    };
+  };
+
+  services = {
+    openssh = {
+      hostKeys = [
+        {
+          type = "ed25519";
+          path = "/persist/etc/ssh/ssh_host_ed25519_key";
+        }
+        {
+          type = "rsa";
+          bits = 4096;
+          path = "/persist/etc/ssh/ssh_host_rsa_key";
+        }
+      ];
     };
   };
 }

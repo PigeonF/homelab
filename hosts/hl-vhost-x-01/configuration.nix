@@ -5,6 +5,11 @@ _: {
   ];
 
   boot = {
+    initrd = {
+      systemd = {
+        enable = true;
+      };
+    };
     loader = {
       efi = {
         canTouchEfiVariables = true;
