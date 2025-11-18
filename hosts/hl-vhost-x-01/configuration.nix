@@ -1,19 +1,20 @@
 _: {
-  imports = [ ./hardware-configuration.nix ];
-
-  boot = {
-    loader = {
-      systemd-boot = {
-        enable = true;
-      };
-      efi = {
-        canTouchEfiVariables = true;
-      };
-    };
-  };
+  imports = [
+    ./disko.nix
+    ./hardware-configuration.nix
+  ];
 
   networking = {
+    domain = "internal";
+    hostId = "5ee11178";
     hostName = "hl-vhost-x-01";
+    useNetworkd = true;
+  };
+
+  systemd = {
+    network = {
+      enable = true;
+    };
   };
 
   services = {

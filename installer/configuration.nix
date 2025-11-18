@@ -1,6 +1,28 @@
-{ modulesPath, lib, ... }:
+{
+  lib,
+  modulesPath,
+  pkgs,
+  ...
+}:
 {
   imports = [ (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix") ];
+
+  environment = {
+    systemPackages = [
+      pkgs.disko
+      pkgs.jq
+      pkgs.nixos-install-tools
+      pkgs.rsync
+    ];
+  };
+
+  image = {
+    baseName = lib.mkForce "nixos-installer-${pkgs.stdenv.hostPlatform.system}";
+  };
+
+  isoImage = {
+    squashfsCompression = "zstd";
+  };
 
   networking = {
     hostName = "nixos-installer";

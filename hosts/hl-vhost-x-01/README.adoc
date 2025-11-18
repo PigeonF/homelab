@@ -12,10 +12,23 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 // URLs:
+:url-nixos-anywhere: https://github.com/nix-community/nixos-anywhere
 
 _hl-vhost-x-01_ is a bare-metal x86_64 server that is used to host different virtual machines.
 The host device is a https://www.bee-link.com/products/beelink-eqi13-pro[Beelink EQi13 Pro] with an Intel Core i7 13620H, 32GB of RAM, and a 1TB SSD.
 
 == Bootstrapping
 
-Follow the https://nixos.wiki/wiki/NixOS_Installation_Guide[NixOS Installation Guide].
+If the minipc already has a linux distribution installed that https://man7.org/linux/man-pages/man8/kexec.8.html[supports kexec], you can skip the following step.
+Prepare the link:../../installer[NixOS Installer] on a USB stick.
+Insert the USB stick into the minipc and connect the minipc to a monitor and keyboard.
+After entering the BIOS either change the boot priority to boot from the USB media first, or boot directly into the USB media without changing the options.
+
+Ensure the minipc is reachable via SSH (in this example it is reachable as `nixos-installer.fritz.box`).
+Use {url-nixos-anywhere}[`nixos-anywhere`] to install the NixOS configuration.
+
+.Install the NixOS configuration with {url-nixos-anywhere}[`nixos-anywhere`].
+[source,console]
+----
+$ SSHPASS=root nix run github:nix-community/nixos-anywhere -- --flake '.#hl-vhost-x-01' --target-host root@nixos-installer.fritz.box --env-password
+----

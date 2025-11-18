@@ -1,4 +1,8 @@
-{ self, lib, ... }:
+{
+  self,
+  lib,
+  ...
+}:
 {
   _file = ./default.nix;
 
@@ -6,6 +10,7 @@
     nixosConfigurations = {
       hl-vhost-x-01 = lib.nixosSystem {
         modules = [
+          self.inputs.disko.nixosModules.disko
           ./configuration.nix
           {
             nixpkgs = {
