@@ -13,6 +13,7 @@ ifdef::env-github[]
 endif::[]
 // URLs:
 :url-nixos-anywhere: https://github.com/nix-community/nixos-anywhere
+:url-deploy-rs: https://github.com/serokell/deploy-rs
 
 _hl-vhost-x-01_ is a bare-metal x86_64 server that is used to host different virtual machines.
 The host device is a https://www.bee-link.com/products/beelink-eqi13-pro[Beelink EQi13 Pro] with an Intel Core i7 13620H, 32GB of RAM, and a 1TB SSD.
@@ -30,5 +31,16 @@ Use {url-nixos-anywhere}[`nixos-anywhere`] to install the NixOS configuration.
 .Install the NixOS configuration with {url-nixos-anywhere}[`nixos-anywhere`].
 [source,console]
 ----
-$ SSHPASS=root nix run github:nix-community/nixos-anywhere -- --flake '.#hl-vhost-x-01' --target-host root@nixos-installer.fritz.box --env-password --generate-hardware-config nixos-facter ./facter.json
+$ SSHPASS=root nix run nixpkgs#nixos-anywhere -- --flake '.#hl-vhost-x-01' --target-host root@nixos-installer.fritz.box --env-password --generate-hardware-config nixos-facter ./facter.json
+----
+
+== Updating the Configuration
+
+To update the configuration from a remote machine, you can use {url-deploy-rs}[`deploy-rs`].
+
+.Update the NixOS configuration with {url-deploy-rs}[`deploy-rs`].
+[source,console]
+----
+$
+$ nix run nixpkgs#deploy-rs -- '.#hl-vhost-x-01'
 ----
