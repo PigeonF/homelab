@@ -25,10 +25,8 @@
   flake = {
     nixosConfigurations = {
       hl-vhost-x-01 = lib.nixosSystem {
+        specialArgs = self.inputs;
         modules = [
-          self.inputs.disko.nixosModules.disko
-          self.inputs.impermanence.nixosModules.impermanence
-          self.inputs.nixos-facter-modules.nixosModules.facter
           ./configuration.nix
         ];
       };
