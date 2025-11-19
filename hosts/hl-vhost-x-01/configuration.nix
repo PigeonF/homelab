@@ -27,6 +27,18 @@ _: {
     useNetworkd = true;
   };
 
+  services = {
+    openssh = {
+      enable = true;
+    };
+    resolved = {
+      enable = true;
+      extraConfig = ''
+        MulticastDNS=yes
+      '';
+    };
+  };
+
   system = {
     stateVersion = "25.11";
   };
@@ -35,6 +47,11 @@ _: {
     network = {
       enable = true;
       networks = {
+        "40-enp171s0" = {
+          networkConfig = {
+            MulticastDNS = true;
+          };
+        };
         "40-wlp172s0" = {
           matchConfig = {
             Name = "wlp172s0";
@@ -44,12 +61,6 @@ _: {
           };
         };
       };
-    };
-  };
-
-  services = {
-    openssh = {
-      enable = true;
     };
   };
 
