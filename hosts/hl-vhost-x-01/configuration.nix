@@ -161,7 +161,39 @@
   systemd = {
     network = {
       enable = true;
+      netdevs = {
+        "40-br0" = {
+          netdevConfig = {
+            Kind = "bridge";
+            Name = "br0";
+          };
+        };
+      };
       networks = {
+        "40-br0" = {
+          matchConfig = {
+            Name = "br0";
+          };
+          networkConfig = {
+            MulticastDNS = "yes";
+            DHCP = "yes";
+            IPv6PrivacyExtensions = "kernel";
+          };
+          linkConfig = {
+            RequiredForOnline = "routable";
+          };
+        };
+        "40-enp170s0" = {
+          matchConfig = {
+            Name = "enp170s0";
+          };
+          networkConfig = {
+            Bridge = "br0";
+          };
+          linkConfig = {
+            RequiredForOnline = "enslaved";
+          };
+        };
         "40-enp171s0" = {
           networkConfig = {
             MulticastDNS = "yes";
