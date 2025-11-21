@@ -46,9 +46,10 @@
         systems = import systems;
 
         imports = [
-          ./nix/modules/deploy-rs.nix
-          ./installer
+          ./hosts/hl-dev-x-01
           ./hosts/hl-vhost-x-01
+          ./installer
+          ./nix/modules/deploy-rs.nix
         ];
 
         flake = { };

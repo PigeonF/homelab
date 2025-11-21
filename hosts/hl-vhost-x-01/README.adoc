@@ -41,6 +41,5 @@ To update the configuration from a remote machine, you can use {url-deploy-rs}[`
 .Update the NixOS configuration with {url-deploy-rs}[`deploy-rs`].
 [source,console]
 ----
-$
 $ nix run nixpkgs#deploy-rs -- '.#hl-vhost-x-01'
 ----

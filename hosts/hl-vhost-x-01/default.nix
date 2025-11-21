@@ -1,8 +1,16 @@
 {
-  self,
   lib,
+  inputs,
   ...
 }:
+let
+  hl-vhost-x-01 = lib.nixosSystem {
+    specialArgs = inputs;
+    modules = [
+      ./configuration.nix
+    ];
+  };
+in
 {
   _file = ./default.nix;
 
@@ -14,8 +22,8 @@
         profiles = {
           system = {
             user = "root";
-            sshUser = "root";
-            path = self.inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.hl-vhost-x-01;
+            sshUser = "administrator";
+            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos hl-vhost-x-01;
           };
         };
       };
@@ -24,12 +32,7 @@
 
   flake = {
     nixosConfigurations = {
-      hl-vhost-x-01 = lib.nixosSystem {
-        specialArgs = self.inputs;
-        modules = [
-          ./configuration.nix
-        ];
-      };
+      inherit hl-vhost-x-01;
     };
   };
 
@@ -37,7 +40,7 @@
     { pkgs, ... }:
     {
       packages = {
-        hl-vhost-x-01 = self.nixosConfigurations.hl-vhost-x-01.config.system.build.toplevel;
+        hl-vhost-x-01 = hl-vhost-x-01.config.system.build.toplevel;
       };
     };
 }

@@ -61,7 +61,6 @@
     variables = {
       HISTFILE = "$XDG_STATE_HOME/bash/history";
       LESSHISTFILE = "$XDG_STATE_HOME/less/history";
-      XCOMPOSECACHE = "$XDG_CACHE_HOME/X11/xcompose";
     };
   };
 
@@ -183,7 +182,6 @@
           matchConfig = {
             Name = "enp170s0";
           };
-          # NOTE(PigeonF): Have to mkForce to prevent DHCP=yes ending up in the config
           networkConfig = {
             Bridge = "br0";
           };
@@ -192,6 +190,9 @@
           };
         };
         "40-enp171s0" = {
+          matchConfig = {
+            Name = "enp171s0";
+          };
           networkConfig = {
             MulticastDNS = "yes";
             DHCP = "yes";
@@ -242,15 +243,6 @@
           authorizedKeys = {
             keys = [
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAffg99C3TKcCLgrCEhhg89maKzPpdOP6lDi4gRCCIm1"
-            ];
-          };
-        };
-      };
-      root = {
-        openssh = {
-          authorizedKeys = {
-            keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGR0JA4clKj7Uz5BBAN6kGFG51jIHXKwRVa8lk/OeJF4"
             ];
           };
         };
