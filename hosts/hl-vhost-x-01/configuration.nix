@@ -65,9 +65,14 @@
     };
   };
 
-  hardware = {
-    bluetooth = {
-      enable = false;
+  facter = {
+    detected = {
+      bluetooth = {
+        enable = false;
+      };
+      dhcp = {
+        enable = false;
+      };
     };
   };
 
@@ -77,6 +82,9 @@
 
   networking = {
     domain = "internal";
+    firewall = {
+      trustedInterfaces = [ "incusbr0" ];
+    };
     hostId = "5ee11178";
     hostName = "hl-vhost-x-01";
     nftables = {
@@ -142,6 +150,7 @@
     };
     resolved = {
       enable = true;
+      llmnr = "false";
       extraConfig = ''
         MulticastDNS=yes
       '';
@@ -150,19 +159,19 @@
       enable = true;
     };
     userborn = {
-      enable = true;
+      enable = false; # https://github.com/nikstur/userborn/issues/7
     };
   };
 
   system = {
-    stateVersion = "25.11";
+    stateVersion = "25.05";
   };
 
   systemd = {
     network = {
       enable = true;
       netdevs = {
-        "40-br0" = {
+        "30-br0" = {
           netdevConfig = {
             Kind = "bridge";
             Name = "br0";
@@ -170,23 +179,11 @@
         };
       };
       networks = {
-        "40-br0" = {
-          matchConfig = {
-            Name = "br0";
-          };
-          networkConfig = {
-            MulticastDNS = "yes";
-            DHCP = "yes";
-            IPv6PrivacyExtensions = "kernel";
-          };
-          linkConfig = {
-            RequiredForOnline = "routable";
-          };
-        };
         "40-enp170s0" = {
           matchConfig = {
             Name = "enp170s0";
           };
+          # NOTE(PigeonF): Have to mkForce to prevent DHCP=yes ending up in the config
           networkConfig = {
             Bridge = "br0";
           };
@@ -198,7 +195,11 @@
           networkConfig = {
             MulticastDNS = "yes";
             DHCP = "yes";
+            UseDomains = "yes";
             IPv6PrivacyExtensions = "kernel";
+          };
+          linkConfig = {
+            RequiredForOnline = "no";
           };
         };
         "40-wlp172s0" = {
@@ -207,6 +208,17 @@
           };
           linkConfig = {
             Unmanaged = "yes";
+          };
+        };
+        "50-br0" = {
+          matchConfig = {
+            Name = "br0";
+          };
+          networkConfig = {
+            MulticastDNS = "yes";
+            DHCP = "yes";
+            UseDomains = "yes";
+            IPv6PrivacyExtensions = "kernel";
           };
         };
       };
@@ -223,6 +235,7 @@
       administrator = {
         isNormalUser = true;
         extraGroups = [
+          "incus-admin"
           "wheel"
         ];
         openssh = {
@@ -241,6 +254,71 @@
             ];
           };
         };
+      };
+    };
+  };
+
+  virtualisation = {
+    incus = {
+      enable = true;
+      preseed = {
+        networks = [
+          {
+            name = "incusbr0";
+            description = "Incus-Internal bridge";
+            type = "bridge";
+            config = {
+              "ipv4.address" = "auto";
+              "ipv4.nat" = "true";
+              "ipv6.address" = "auto";
+              "ipv6.nat" = "true";
+            };
+          }
+        ];
+        profiles = [
+          {
+            name = "default";
+            description = "Default incus profile";
+            devices = {
+              eth0 = {
+                name = "eth0";
+                network = "incusbr0";
+                type = "nic";
+              };
+              root = {
+                path = "/";
+                pool = "default";
+                type = "disk";
+              };
+            };
+          }
+          {
+            name = "bridged";
+            description = "Instance connected to LAN bridge";
+            devices = {
+              eth0 = {
+                name = "eth0";
+                nictype = "bridged";
+                parent = "br0";
+                type = "nic";
+              };
+              root = {
+                path = "/";
+                pool = "default";
+                type = "disk";
+              };
+            };
+          }
+        ];
+        storage_pools = [
+          {
+            name = "default";
+            driver = "zfs";
+            config = {
+              source = "zroot/local/incus";
+            };
+          }
+        ];
       };
     };
   };

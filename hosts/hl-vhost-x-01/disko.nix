@@ -70,6 +70,10 @@ in
               mountpoint = "/home";
               options."com.sun:auto-snapshot" = "true";
             };
+            "local/incus" = {
+              type = "zfs_fs";
+              options.mountpoint = "none";
+            };
             "local/nix" = {
               type = "zfs_fs";
               mountpoint = "/nix";
