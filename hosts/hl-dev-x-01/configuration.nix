@@ -3,10 +3,12 @@
   lib,
   nixpkgs,
   modulesPath,
+  vscode-server,
   ...
 }:
 {
   imports = [
+    vscode-server.nixosModules.default
     (modulesPath + "/virtualisation/incus-virtual-machine.nix")
   ];
 
@@ -115,6 +117,10 @@
     };
     userborn = {
       enable = false; # https://github.com/nikstur/userborn/issues/7
+    };
+    vscode-server = {
+      enable = true;
+      installPath = [ "$HOME/.vscodium-server" ];
     };
   };
 

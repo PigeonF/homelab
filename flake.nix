@@ -28,6 +28,11 @@
     nixos-facter-modules = {
       url = "github:nix-community/nixos-facter-modules?ref=refs/heads/main";
     };
+    vscode-server = {
+      url = "github:nix-community/nixos-vscode-server?ref=refs/heads/master";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
