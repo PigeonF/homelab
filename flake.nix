@@ -2,7 +2,7 @@
   description = "Nix configurations for my homelab";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=refs/heads/release-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=refs/heads/release-25.11";
     systems.url = "github:nix-systems/default?ref=refs/heads/main";
 
     deploy-rs = {

@@ -163,7 +163,7 @@
   };
 
   system = {
-    stateVersion = "25.05";
+    stateVersion = "25.11";
   };
 
   systemd = {
@@ -217,7 +217,7 @@
           };
           networkConfig = {
             MulticastDNS = "yes";
-            DHCP = "yes";
+            # DHCP = "yes";
             UseDomains = "yes";
             IPv6PrivacyExtensions = "kernel";
           };
