@@ -41,13 +41,7 @@ in
     {
       packages = {
         hl-dev-x-01 = hl-dev-x-01.config.system.build.toplevel;
-        hl-dev-x-01-incus-files = pkgs.symlinkJoin {
-          name = "hl-dev-x-01";
-          paths = [
-            hl-dev-x-01.config.system.build.metadata
-            hl-dev-x-01.config.system.build.qemuImage
-          ];
-        };
+        hl-dev-x-01-tarball = hl-dev-x-01.config.system.build.tarball;
       };
     };
 }

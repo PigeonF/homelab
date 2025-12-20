@@ -14,6 +14,7 @@
     impermanence.nixosModules.impermanence
     nixos-facter-modules.nixosModules.facter
     { config.facter.reportPath = ./facter.json; }
+    ./hl-dev-x-01.nix
   ];
 
   boot = {
@@ -81,9 +82,6 @@
 
   networking = {
     domain = "internal";
-    firewall = {
-      trustedInterfaces = [ "incusbr0" ];
-    };
     hostId = "5ee11178";
     hostName = "hl-vhost-x-01";
     nftables = {
@@ -169,6 +167,10 @@
   systemd = {
     network = {
       enable = true;
+      wait-online = {
+        # TODO(PigeonF): See if we can remove this
+        anyInterface = true;
+      };
       netdevs = {
         "30-br0" = {
           netdevConfig = {
@@ -200,7 +202,7 @@
             IPv6PrivacyExtensions = "kernel";
           };
           linkConfig = {
-            RequiredForOnline = "no";
+            RequiredForOnline = "yes";
           };
         };
         "40-wlp172s0" = {
@@ -236,7 +238,6 @@
       administrator = {
         isNormalUser = true;
         extraGroups = [
-          "incus-admin"
           "wheel"
         ];
         openssh = {
@@ -246,71 +247,6 @@
             ];
           };
         };
-      };
-    };
-  };
-
-  virtualisation = {
-    incus = {
-      enable = true;
-      preseed = {
-        networks = [
-          {
-            name = "incusbr0";
-            description = "Incus-Internal bridge";
-            type = "bridge";
-            config = {
-              "ipv4.address" = "auto";
-              "ipv4.nat" = "true";
-              "ipv6.address" = "auto";
-              "ipv6.nat" = "true";
-            };
-          }
-        ];
-        profiles = [
-          {
-            name = "default";
-            description = "Default incus profile";
-            devices = {
-              eth0 = {
-                name = "eth0";
-                network = "incusbr0";
-                type = "nic";
-              };
-              root = {
-                path = "/";
-                pool = "default";
-                type = "disk";
-              };
-            };
-          }
-          {
-            name = "bridged";
-            description = "Instance connected to LAN bridge";
-            devices = {
-              eth0 = {
-                name = "eth0";
-                nictype = "bridged";
-                parent = "br0";
-                type = "nic";
-              };
-              root = {
-                path = "/";
-                pool = "default";
-                type = "disk";
-              };
-            };
-          }
-        ];
-        storage_pools = [
-          {
-            name = "default";
-            driver = "zfs";
-            config = {
-              source = "zroot/local/incus";
-            };
-          }
-        ];
       };
     };
   };

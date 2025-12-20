@@ -7,7 +7,8 @@
 }:
 {
   imports = [
-    (modulesPath + "/virtualisation/incus-virtual-machine.nix")
+    (modulesPath + "/profiles/minimal.nix")
+    ./nspawn-container.nix
   ];
 
   environment = {
@@ -41,8 +42,6 @@
     nftables = {
       enable = true;
     };
-    useDHCP = true;
-    useNetworkd = true;
   };
 
   nix = {
@@ -65,7 +64,8 @@
         "auto-allocate-uids"
         "cgroups"
       ];
-      sandbox = true;
+      # TODO(PigeonF): Figure out how to make this work within nspawn container
+      sandbox = false;
       system-features = [ "uid-range" ];
       trusted-users = [ "@wheel" ];
       use-cgroups = true;
@@ -88,6 +88,7 @@
   };
 
   services = {
+    # TODO(PigeonF): ssh not enable because of bad networkctl configuration?
     openssh = {
       enable = true;
       extraConfig = ''
@@ -120,24 +121,6 @@
 
   system = {
     stateVersion = "25.05";
-  };
-
-  systemd = {
-    network = {
-      enable = true;
-      networks = {
-        "40-ethernet" = {
-          matchConfig = {
-            Type = "ether";
-          };
-          networkConfig = {
-            MulticastDNS = "yes";
-            DHCP = "yes";
-            UseDomains = "yes";
-          };
-        };
-      };
-    };
   };
 
   time = {
