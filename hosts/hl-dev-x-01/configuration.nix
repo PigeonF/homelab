@@ -55,7 +55,7 @@
       };
     };
     settings = {
-      auto-allocate-uids = true;
+      auto-allocate-uids = false;
       # download-buffer-size = 512 * 1024 * 1024;
       extra-experimental-features = [
         "flakes"
@@ -64,8 +64,7 @@
         "auto-allocate-uids"
         "cgroups"
       ];
-      # TODO(PigeonF): Figure out how to make this work within nspawn container
-      sandbox = false;
+      sandbox = true;
       system-features = [ "uid-range" ];
       trusted-users = [ "@wheel" ];
       use-cgroups = true;

@@ -76,5 +76,11 @@ in
     network = {
       enable = true;
     };
+    services = {
+      nix-daemon = {
+        # https://github.com/NixOS/nixpkgs/issues/405256
+        preStart = "mount proc -t proc /proc";
+      };
+    };
   };
 }
