@@ -28,12 +28,17 @@
     nixos-facter-modules = {
       url = "github:nix-community/nixos-facter-modules?ref=refs/heads/main";
     };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix?ref=refs/heads/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     inputs@{
       flake-parts,
       systems,
+      treefmt-nix,
       ...
     }:
     flake-parts.lib.mkFlake
@@ -46,6 +51,7 @@
         systems = import systems;
 
         imports = [
+          treefmt-nix.flakeModule
           ./hosts/hl-dev-x-01
           ./hosts/hl-vhost-x-01
           ./installer
@@ -54,6 +60,20 @@
 
         flake = { };
 
-        perSystem = { };
+        perSystem =
+          { pkgs, ... }:
+          {
+            treefmt = import ./treefmt.nix;
+
+            checks = {
+              reuse =
+                let
+                  files = pkgs.nix-gitignore.gitignoreSourcePure [ ] (pkgs.lib.cleanSource ./.);
+                in
+                pkgs.runCommandLocal "reuse" { } ''
+                  ${pkgs.lib.getExe pkgs.reuse} --root ${files} lint | tee $out
+                '';
+            };
+          };
       });
 }

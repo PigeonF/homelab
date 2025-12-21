@@ -35,9 +35,9 @@ in
     useDHCP = false;
   };
   services = {
-      openssh = {
-          startWhenNeeded = false;
-      };
+    openssh = {
+      startWhenNeeded = false;
+    };
   };
   system = {
     activationScripts = {

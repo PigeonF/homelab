@@ -36,11 +36,9 @@ in
     };
   };
 
-  perSystem =
-    { pkgs, ... }:
-    {
-      packages = {
-        hl-vhost-x-01 = hl-vhost-x-01.config.system.build.toplevel;
-      };
+  perSystem = _: {
+    packages = {
+      hl-vhost-x-01 = hl-vhost-x-01.config.system.build.toplevel;
     };
+  };
 }

@@ -36,12 +36,10 @@ in
     };
   };
 
-  perSystem =
-    { pkgs, ... }:
-    {
-      packages = {
-        hl-dev-x-01 = hl-dev-x-01.config.system.build.toplevel;
-        hl-dev-x-01-tarball = hl-dev-x-01.config.system.build.tarball;
-      };
+  perSystem = _: {
+    packages = {
+      hl-dev-x-01 = hl-dev-x-01.config.system.build.toplevel;
+      hl-dev-x-01-tarball = hl-dev-x-01.config.system.build.tarball;
     };
+  };
 }

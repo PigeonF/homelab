@@ -11,7 +11,7 @@ _: {
           Timezone = "off";
         };
         filesConfig = {
-            PrivateUsersOwnership = "auto";
+          PrivateUsersOwnership = "auto";
         };
         networkConfig = {
           Private = true;

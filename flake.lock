@@ -161,7 +161,8 @@
         "impermanence": "impermanence",
         "nixos-facter-modules": "nixos-facter-modules",
         "nixpkgs": "nixpkgs",
-        "systems": "systems"
+        "systems": "systems",
+        "treefmt-nix": "treefmt-nix"
       }
     },
     "systems": {
@@ -177,6 +178,27 @@
         "owner": "nix-systems",
         "ref": "refs/heads/main",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "treefmt-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1766000401,
+        "narHash": "sha256-+cqN4PJz9y0JQXfAK5J1drd0U05D5fcAGhzhfVrDlsI=",
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "rev": "42d96e75aa56a3f70cab7e7dc4a32868db28e8fd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "ref": "refs/heads/main",
+        "repo": "treefmt-nix",
         "type": "github"
       }
     }

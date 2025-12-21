@@ -24,14 +24,12 @@
       };
   };
 
-  perSystem =
-    { pkgs, ... }:
-    {
-      packages = {
-        nixos-installer-aarch64 =
-          self.nixosConfigurations.nixos-installer-aarch64.config.system.build.isoImage;
-        nixos-installer-x86_64 =
-          self.nixosConfigurations.nixos-installer-x86_64.config.system.build.isoImage;
-      };
+  perSystem = _: {
+    packages = {
+      nixos-installer-aarch64 =
+        self.nixosConfigurations.nixos-installer-aarch64.config.system.build.isoImage;
+      nixos-installer-x86_64 =
+        self.nixosConfigurations.nixos-installer-x86_64.config.system.build.isoImage;
     };
+  };
 }
