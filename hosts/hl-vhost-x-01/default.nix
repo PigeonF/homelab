@@ -18,12 +18,30 @@ in
     nodes = {
       hl-vhost-x-01 = {
         hostname = "hl-vhost-x-01";
-        profilesOrder = [ "system" ];
+        profilesOrder = [
+          "system"
+          "homeManager.root"
+          "homeManager.administrator"
+        ];
         profiles = {
           system = {
             user = "root";
             sshUser = "administrator";
             path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos hl-vhost-x-01;
+          };
+          "homeManager.root" = {
+            user = "root";
+            sshUser = "administrator";
+            path =
+              inputs.deploy-rs.lib.x86_64-linux.activate.home-manager
+                inputs.dotfiles.legacyPackages.x86_64-linux.homeConfigurations."root";
+          };
+          "homeManager.administrator" = {
+            user = "administrator";
+            sshUser = "administrator";
+            path =
+              inputs.deploy-rs.lib.x86_64-linux.activate.home-manager
+                inputs.dotfiles.legacyPackages.x86_64-linux.homeConfigurations."administrator";
           };
         };
       };

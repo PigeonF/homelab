@@ -14,6 +14,13 @@
       url = "github:nix-community/disko?ref=refs/heads/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    dotfiles = {
+      url = "github:PigeonF/dotfiles?ref=refs/heads/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
     flake-parts = {
       url = "github:hercules-ci/flake-parts?ref=refs/heads/main";
       inputs.nixpkgs-lib.follows = "nixpkgs";
