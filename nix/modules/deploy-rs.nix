@@ -87,8 +87,9 @@ let
         '';
       };
       sudo = mkOption {
-        type = types.str;
-        default = "sudo -u";
+        type = types.nullOr types.str;
+        default = null;
+        defaultText = "sudo -u";
         description = ''
           Which sudo command to use. Must accept at least two arguments:
           the user name to execute commands as and the rest is the command to
@@ -96,38 +97,43 @@ let
         '';
       };
       interactiveSudo = mkOption {
-        type = types.bool;
-        default = false;
+        type = types.nullOr types.bool;
+        default = null;
+        defaultText = "false";
         description = ''
           Whether to enable interactive sudo (password based sudo). Useful when
           using non-root sshUsers.
         '';
       };
       sshOpts = mkOption {
-        type = types.listOf types.str;
-        default = [ ];
+        type = types.nullOr (types.listOf types.str);
+        default = null;
+        defaultText = "[]";
         description = ''
           This is an optional list of arguments that will be passed to SSH.
         '';
       };
       fastConnection = mkOption {
-        type = types.bool;
-        default = false;
+        type = types.nullOr types.bool;
+        default = null;
+        defaultText = "false";
         description = ''
           Fast connection to the node. If this is true, copy the whole closure
           instead of letting the node substitute.
         '';
       };
       autoRollback = mkOption {
-        type = types.bool;
-        default = true;
+        type = types.nullOr types.bool;
+        default = null;
+        defaultText = "true";
         description = ''
           If the previous profile should be re-activated if activation fails.
         '';
       };
       magicRollback = mkOption {
-        type = types.bool;
-        default = true;
+        type = types.nullOr types.bool;
+        default = null;
+        defaultText = "true";
         description = ''
           There is a built-in feature to prevent you making changes that might
           render your machine unconnectable or unusable, which works by
@@ -140,8 +146,9 @@ let
         '';
       };
       tempPath = mkOption {
-        type = types.path;
-        default = "/tmp";
+        type = types.nullOr types.path;
+        default = null;
+        defaultText = "/tmp";
         description = ''
           The path which deploy-rs will use for temporary files, this is
           currently only used by `magicRollback` to create an inotify watcher in
@@ -151,23 +158,26 @@ let
         '';
       };
       remoteBuild = mkOption {
-        type = types.bool;
-        default = false;
+        type = types.nullOr types.bool;
+        default = null;
+        defaultText = "false";
         description = ''
           Build the derivation on the target system. Will also fetch all
           external dependencies from the target system's substituters.
         '';
       };
       activationTimeout = mkOption {
-        type = types.int;
-        default = 240;
+        type = types.nullOr types.int;
+        default = null;
+        defaultText = "240";
         description = ''
           Timeout for profile activation.
         '';
       };
       confirmTimeout = mkOption {
-        type = types.int;
-        default = 30;
+        type = types.nullOr types.int;
+        default = null;
+        defaultText = "30";
         description = ''
           Timeout for confirmation.
         '';
@@ -197,7 +207,7 @@ in
 
     flakeDevShell = mkOption {
       type = types.bool;
-      default = true;
+      default = false;
       description = ''
         Adds a devshell
       '';
