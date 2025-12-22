@@ -133,6 +133,7 @@
         isNormalUser = true;
         extraGroups = [
           "wheel"
+          "docker"
         ];
         openssh = {
           authorizedKeys = {
@@ -142,6 +143,12 @@
           };
         };
       };
+    };
+  };
+
+  virtualisation = {
+    docker = {
+      enable = true;
     };
   };
 }

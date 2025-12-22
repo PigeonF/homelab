@@ -7,11 +7,16 @@ _: {
           #DropCabaility
           #NoNewPrivileges
           PrivateUsers = "pick";
+          Capability = "CAP_SETUID CAP_SETGID";
+          SystemCallFilter = "@keyring bpf";
           LinkJournal = "try-guest";
           Timezone = "off";
         };
         filesConfig = {
           PrivateUsersOwnership = "auto";
+          Bind = [
+            "/sys:/run/sys"
+          ];
         };
         networkConfig = {
           Private = true;
