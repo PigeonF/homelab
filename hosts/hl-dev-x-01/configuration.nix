@@ -138,7 +138,7 @@
         openssh = {
           authorizedKeys = {
             keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICSGbm3QEVQFhYqJM29rQ6WibpQr613KgxoYTr/QvztV"
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGs63WIkcWBEVHzc9Evjt/57Ikf9WPD1u7oFQVMO7e2a"
             ];
           };
         };
