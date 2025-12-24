@@ -15,6 +15,7 @@
     nixos-facter-modules.nixosModules.facter
     { config.facter.reportPath = ./facter.json; }
     ./hl-dev-x-01.nix
+    ./hl-ci-x-01.nix
   ];
 
   boot = {

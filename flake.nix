@@ -59,6 +59,7 @@
 
         imports = [
           treefmt-nix.flakeModule
+          ./hosts/hl-ci-x-01
           ./hosts/hl-dev-x-01
           ./hosts/hl-vhost-x-01
           ./installer
