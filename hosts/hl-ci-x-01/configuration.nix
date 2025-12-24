@@ -85,6 +85,30 @@
   };
 
   services = {
+    gitlab-runner = {
+      enable = true;
+      clear-docker-cache = {
+        enable = true;
+      };
+      gracefulTermination = true;
+      gracefulTimeout = "30s";
+      settings = {
+        concurrent = 8;
+        check_interval = 15;
+      };
+      services = {
+        docker = {
+          authenticationTokenConfigFile = "/run/host/credentials/gitlab-runner-auth-config-docker";
+          dockerImage = "docker.io/busybox:latest";
+          executor = "docker";
+          registrationFlags = [
+            "--docker-volumes /builds"
+            "--docker-volumes /cache"
+            "--docker-volumes /var/lib/containers"
+          ];
+        };
+      };
+    };
     openssh = {
       enable = true;
       extraConfig = ''
@@ -117,6 +141,33 @@
 
   system = {
     stateVersion = "25.05";
+    disableInstallerTools = true;
+  };
+
+  systemd = {
+    network = {
+      networks = {
+        "05-container-bridge" = {
+          matchConfig = {
+            Type = "bridge";
+            Name = "docker*";
+
+          };
+          linkConfig = {
+            Unmanaged = true;
+          };
+        };
+        "05-container-veth" = {
+          matchConfig = {
+            Type = "ether";
+            Name = "veth*";
+          };
+          linkConfig = {
+            Unmanaged = true;
+          };
+        };
+      };
+    };
   };
 
   time = {

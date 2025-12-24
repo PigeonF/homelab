@@ -1,10 +1,11 @@
 {
-  pkgs,
   lib,
-  nixpkgs,
+  pkgs,
   disko,
   impermanence,
   nixos-facter-modules,
+  nixpkgs,
+  sops-nix,
   ...
 }:
 {
@@ -13,6 +14,7 @@
     ./disko.nix
     impermanence.nixosModules.impermanence
     nixos-facter-modules.nixosModules.facter
+    sops-nix.nixosModules.sops
     { config.facter.reportPath = ./facter.json; }
     ./hl-dev-x-01.nix
     ./hl-ci-x-01.nix

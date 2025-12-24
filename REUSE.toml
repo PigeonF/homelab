@@ -4,6 +4,7 @@ version = 1
 path = [
     ".editorconfig",
     ".gitignore",
+    ".sops.yaml",
     "flake.lock",
     "flake.nix",
     "hosts/**",

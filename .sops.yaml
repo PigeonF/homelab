@@ -1,0 +1,17 @@
+# Configuration file for [sops](https://github.com/getsops/sops).
+---
+# Keys are generated using [ssh-to-age](https://github.com/Mic92/ssh-to-age).
+keys:
+  users:
+    pigeonf: &pigeonf "age1nfa5tsvl33wmex09mj27kzcrl25xz5h74sg64rka2cekhjrd5frsnsymry"
+  hosts:
+    hl-vhost-x-01: &hl-vhost-x-01 "age1qz03h96r4t4upqgnwp3d058nv3ffsanhdzn8rlgwmkk6myhyr46snv9k2e"
+creation_rules:
+  - key_groups:
+      - age:
+          - *pigeonf
+          - *hl-vhost-x-01
+    path_regex: ^hosts/hl-vhost-x-01/secrets/.+\.yaml$
+stores:
+  yaml:
+    indent: 2

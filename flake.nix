@@ -35,6 +35,10 @@
     nixos-facter-modules = {
       url = "github:nix-community/nixos-facter-modules?ref=refs/heads/main";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix?ref=refs/heads/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix?ref=refs/heads/main";
       inputs.nixpkgs.follows = "nixpkgs";
