@@ -148,6 +148,9 @@
         ];
       };
     };
+    pcscd = {
+      enable = true;
+    };
     resolved = {
       enable = true;
       llmnr = "false";

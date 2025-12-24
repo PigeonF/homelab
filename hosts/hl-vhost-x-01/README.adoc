@@ -31,7 +31,30 @@ Use {url-nixos-anywhere}[`nixos-anywhere`] to install the NixOS configuration.
 .Install the NixOS configuration with {url-nixos-anywhere}[`nixos-anywhere`].
 [source,console]
 ----
-$ SSHPASS=root nix run nixpkgs#nixos-anywhere -- --flake '.#hl-vhost-x-01' --target-host root@nixos-installer.fritz.box --env-password --generate-hardware-config nixos-facter ./facter.json
+$ SSHPASS=root nix run nixpkgs#nixos-anywhere -- --flake '.#hl-vhost-x-01' -L --target-host root@192.168.178.130 --env-password --generate-hardware-config nixos-facter ./facter.json
+----
+
+Set a disk encryption password when prompted.
+This does not need to have high entropy - after the first boot we will replace it with yubikey authentication.
+After the installation is done,
+unlock the disk via SSH
+
+.Unlock the disk encryption after the reboot
+[source,console]
+----
+$ ssh root@192.168.178.130 -p 2222
+----
+
+After unlocking the disk, SSH into `hl-vhost-x-01` and `sudo su` to `root`.
+We are going to enroll a recovery key and a yubikey with `systemd-cryptenroll` and remove the low entropy passphrase.
+
+.Enroll the Yubikey and a recovery key for disk decryption
+[source,console]
+----
+hl-vhost-x-01 $ systemd-cryptenroll /dev/nvme0n1p4
+hl-vhost-x-01 $ systemd-cryptenroll /dev/nvme0n1p4 --recovery-key
+hl-vhost-x-01 $ systemd-cryptenroll /dev/nvme0n1p4 --fido2-device=auto --fido2-with-client-pin=false --fido2-with-user-presence=true --fido2-with-user-verification=false
+hl-vhost-x-01 $ systemd-cryptenroll /dev/nvme0n1p4 --wipe-slot=password
 ----
 
 == Updating the Configuration

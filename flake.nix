@@ -11,7 +11,8 @@
       inputs.utils.follows = "flake-utils";
     };
     disko = {
-      url = "github:nix-community/disko?ref=refs/heads/master";
+      # url = "github:nix-community/disko?ref=refs/heads/master";
+      url = "github:PigeonF/disko?ref=refs/heads/push-lmlquwslzsyn"; # https://github.com/nix-community/disko/issues/1099
       inputs.nixpkgs.follows = "nixpkgs";
     };
     dotfiles = {
