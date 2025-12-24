@@ -63,7 +63,7 @@
           ./hosts/hl-dev-x-01
           ./hosts/hl-vhost-x-01
           ./installer
-          ./nix/modules/deploy-rs.nix
+          ./nix/flake-modules/deploy-rs.nix
         ];
 
         flake = { };

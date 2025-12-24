@@ -27,6 +27,11 @@ _: {
     };
     services = {
       "systemd-nspawn@hl-ci-x-01" = {
+        serviceConfig = {
+          CPUQuota = "400%";
+          MemoryHigh = "8G";
+          MemoryMax = "12G";
+        };
         unitConfig = {
           ConditionPathExists = "/var/lib/machines/hl-ci-x-01";
         };
