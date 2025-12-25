@@ -104,6 +104,14 @@
                       "noatime"
                     ];
                   };
+                  "/root" = {
+                    mountpoint = "/root";
+                    mountOptions = [
+                      "compress=zstd"
+                      "ssd"
+                      "noatime"
+                    ];
+                  };
                   "/home" = {
                     mountpoint = "/home";
                     mountOptions = [
@@ -191,29 +199,38 @@
           };
         };
         services = {
-          btrfs-rollback = {
-            description = "Rollback BTRFS root subvolume to a pristine state";
-            wantedBy = [ "initrd.target" ];
-            before = [ "sysroot.mount" ];
-            requires = [ "dev-pool-btrfs.device" ];
-            after = [ "dev-pool-btrfs.device" ];
-            unitConfig.DefaultDependencies = "no";
-            serviceConfig.Type = "oneshot";
-            script = "true";
-            # script = ''
-            #   MNTPOINT=/mnt
-            #   mkdir -p "$MNTPOINT"
-            #   trap 'umount "$MNTPOINT"; rm -rf "$MNTPOINT"' EXIT
-            #   mount -o subvol=/ -t btrfs /dev/mapper/pool-btrfs "$MNTPOINT"
-            #   btrfs subvolume list -o "$MNTPOINT/" | cut -f9 -d' ' | while read subvolume; do
-            #     echo "deleting /$subvolume subvolume..."
-            #     btrfs subvolume delete "$MNTPOINT/$subvolume"
-            #   done && echo "deleting /rootfs subvolume..." && btrfs subvolume delete "$MNTPOINT/rootfs"
-            #   echo "restoring blank /rootfs subvolume..."
-            #   btrfs subvolume snapshot "$MNTPOINT/rootfs-blank" "$MNTPOINT/rootfs"
-            #   umount "$MNTPOINT"
-            # '';
-          };
+          # btrfs-rollback = {
+          #   description = "Rollback BTRFS root subvolume to a pristine state";
+          #   wantedBy = [ "initrd.target" ];
+          #   before = [ "sysroot.mount" ];
+          #   requires = [ "dev-pool-btrfs.device" ];
+          #   after = [ "dev-pool-btrfs.device" ];
+          #   unitConfig = {
+          #     DefaultDependencies = "no";
+          #   };
+          #   serviceConfig = {
+          #     Type = "oneshot";
+          #   };
+          #   script = ''
+          #     set -o errexit
+          #     set -o nounset
+          #     set -o pipefail
+
+          #     MNTPOINT=/mnt
+          #     mkdir -p "$MNTPOINT"
+          #     trap 'umount "$MNTPOINT"; rm -rf "$MNTPOINT"' EXIT
+          #     mount -o subvol=/ -t btrfs /dev/mapper/pool-btrfs "$MNTPOINT"
+          #     btrfs subvolume list -o "$MNTPOINT/" | cut -f9 -d' ' | while read -r subvolume; do
+          #       echo "deleting /$subvolume subvolume..."
+          #       btrfs subvolume delete "$MNTPOINT/$subvolume"
+          #     done
+          #     echo "deleting /rootfs subvolume..."
+          #     btrfs subvolume delete "$MNTPOINT/rootfs"
+          #     echo "restoring blank /rootfs subvolume..."
+          #     btrfs subvolume snapshot "$MNTPOINT/rootfs-blank" "$MNTPOINT/rootfs"
+          #     umount "$MNTPOINT"
+          #   '';
+          # };
           remote-unlock = {
             description = "Prepare .profile for remote unlock";
             wantedBy = [ "initrd.target" ];

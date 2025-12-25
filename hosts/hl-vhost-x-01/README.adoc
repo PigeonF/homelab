@@ -53,7 +53,7 @@ We are going to enroll a recovery key and a yubikey with `systemd-cryptenroll` a
 ----
 hl-vhost-x-01 $ systemd-cryptenroll /dev/nvme0n1p4
 hl-vhost-x-01 $ systemd-cryptenroll /dev/nvme0n1p4 --recovery-key
-hl-vhost-x-01 $ systemd-cryptenroll /dev/nvme0n1p4 --fido2-device=auto --fido2-with-client-pin=false --fido2-with-user-presence=true --fido2-with-user-verification=false
+hl-vhost-x-01 $ systemd-cryptenroll /dev/nvme0n1p4 --fido2-device=auto --fido2-with-client-pin=false --fido2-with-user-presence=true --fido2-with-user-verification=false --fido2-credential-algorithm=eddsa
 hl-vhost-x-01 $ systemd-cryptenroll /dev/nvme0n1p4 --wipe-slot=password
 ----
 
