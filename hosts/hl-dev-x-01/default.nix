@@ -54,10 +54,38 @@ in
     };
   };
 
-  perSystem = _: {
-    packages = {
-      hl-dev-x-01 = hl-dev-x-01.config.system.build.toplevel;
-      hl-dev-x-01-tarball = hl-dev-x-01.config.system.build.tarball;
+  perSystem =
+    { pkgs, ... }:
+    {
+      apps = {
+        bootstrap-hl-dev-x-01 = {
+          type = "app";
+          meta = {
+            description = "Bootstrap the hl-dev-x-01 container";
+          };
+          program = pkgs.writeShellApplication {
+            name = "bootstrap-hl-dev-x-01";
+            text = ''
+              if [ -d /var/lib/machines/hl-dev-x-01 ]; then
+                echo 1>&2 "hl-dev-x-01 machine exists already. Use deploy to update configuration"
+                exit 0
+              fi
+
+              if [ "$EUID" -ne 0 ]; then
+                echo 1>&2 "importctl only works with root rights. Rerun with sudo."
+                exit 1
+              fi
+
+              config="''${1:-${inputs.self}#nixosConfigurations.hl-dev-x-01}"
+              tarball=$(nix build -L --print-out-paths "$config.config.system.build.tarball")
+              importctl -m import-tar "$tarball/tarball/nixos-system-x86_64-linux.tar.xz" hl-dev-x-01
+              machinectl start hl-dev-x-01
+            '';
+          };
+        };
+      };
+      packages = {
+        hl-dev-x-01 = hl-dev-x-01.config.system.build.toplevel;
+      };
     };
-  };
 }

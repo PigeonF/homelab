@@ -46,10 +46,38 @@ in
     };
   };
 
-  perSystem = _: {
-    packages = {
-      hl-ci-x-01 = hl-ci-x-01.config.system.build.toplevel;
-      hl-ci-x-01-tarball = hl-ci-x-01.config.system.build.tarball;
+  perSystem =
+    { pkgs, ... }:
+    {
+      apps = {
+        bootstrap-hl-ci-x-01 = {
+          type = "app";
+          meta = {
+            description = "Bootstrap the hl-ci-x-01 container";
+          };
+          program = pkgs.writeShellApplication {
+            name = "bootstrap-hl-ci-x-01";
+            text = ''
+              if [ -d /var/lib/machines/hl-ci-x-01 ]; then
+                echo 1>&2 "hl-ci-x-01 machine exists already. Use deploy to update configuration"
+                exit 0
+              fi
+
+              if [ "$EUID" -ne 0 ]; then
+                echo 1>&2 "importctl only works with root rights. Rerun with sudo."
+                exit 1
+              fi
+
+              config="''${1:-${inputs.self}#nixosConfigurations.hl-ci-x-01}"
+              tarball=$(nix build -L --print-out-paths "$config.config.system.build.tarball")
+              importctl -m import-tar "$tarball/tarball/nixos-system-x86_64-linux.tar.xz" hl-ci-x-01
+              machinectl start hl-ci-x-01
+            '';
+          };
+        };
+      };
+      packages = {
+        hl-ci-x-01 = hl-ci-x-01.config.system.build.toplevel;
+      };
     };
-  };
 }
