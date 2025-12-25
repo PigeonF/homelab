@@ -5,7 +5,7 @@ keys:
   users:
     pigeonf: &pigeonf "age1nfa5tsvl33wmex09mj27kzcrl25xz5h74sg64rka2cekhjrd5frsnsymry"
   hosts:
-    hl-vhost-x-01: &hl-vhost-x-01 "age152sqa2m9msyt0l7funxmkky87zuf8g7v6u7lduymgrtq2gm6k3mqx9pxng"
+    hl-vhost-x-01: &hl-vhost-x-01 "age19ag45w5lgwkqk59svvvhs33fx0phxz4jml52xmlyqzjll9um33sqyxqgfh"
 creation_rules:
   - key_groups:
       - age:

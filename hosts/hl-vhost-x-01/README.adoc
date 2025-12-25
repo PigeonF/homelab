@@ -57,6 +57,19 @@ hl-vhost-x-01 $ systemd-cryptenroll /dev/nvme0n1p4 --fido2-device=auto --fido2-w
 hl-vhost-x-01 $ systemd-cryptenroll /dev/nvme0n1p4 --wipe-slot=password
 ----
 
+You might have to update secrets if the SSH host key changed.
+
+[source,console]
+----
+hl-vhost-x-01 $ mkdir -p ~/.config/sops/age
+hl-vhost-x-01 $ chmod 0700 ~/.config/sops/age
+hl-vhost-x-01 $ cat | ssh-to-age -private-key | tee ~/.config/sops/age/keys.txt
+hl-vhost-x-01 $ ssh-keyscan localhost | ssh-to-age
+hl-vhost-x-01 $ hx .sops.yaml
+hl-vhost-x-01 $ sops -d -i hosts/hl-vhost-x-01/secrets/*
+hl-vhost-x-01 $ sops -e -i hosts/hl-vhost-x-01/secrets/*
+----
+
 == Updating the Configuration
 
 To update the configuration from a remote machine, you can use {url-deploy-rs}[`deploy-rs`].
