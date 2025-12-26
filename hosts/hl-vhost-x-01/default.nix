@@ -34,14 +34,14 @@ in
             sshUser = "administrator";
             path =
               inputs.deploy-rs.lib.x86_64-linux.activate.home-manager
-                inputs.dotfiles.legacyPackages.x86_64-linux.homeConfigurations."root";
+                inputs.dotfiles.homeConfigurations."root@x86_64-linux";
           };
           "homeManager.administrator" = {
             user = "administrator";
             sshUser = "administrator";
             path =
               inputs.deploy-rs.lib.x86_64-linux.activate.home-manager
-                inputs.dotfiles.legacyPackages.x86_64-linux.homeConfigurations."administrator";
+                inputs.dotfiles.homeConfigurations."administrator@hl-vhost-x-01";
           };
         };
       };

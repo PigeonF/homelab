@@ -17,9 +17,10 @@
     };
     dotfiles = {
       url = "github:PigeonF/dotfiles?ref=refs/heads/main";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.home-manager.follows = "home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
-      inputs.flake-parts.follows = "flake-parts";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
     flake-parts = {
@@ -29,6 +30,10 @@
     flake-utils = {
       url = "github:numtide/flake-utils?ref=refs/heads/main";
       inputs.systems.follows = "systems";
+    };
+    home-manager = {
+      url = "github:nix-community/home-manager?ref=refs/heads/release-25.11";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     impermanence = {
       url = "github:nix-community/impermanence?ref=refs/heads/master";
@@ -66,6 +71,7 @@
           treefmt-nix.flakeModule
           ./hosts/hl-ci-x-01
           ./hosts/hl-dev-x-01
+          ./hosts/hl-dev-x-02
           ./hosts/hl-vhost-x-01
           ./installer
           ./nix/flake-modules/deploy-rs.nix

@@ -33,7 +33,7 @@ in
             sshUser = "root";
             path =
               inputs.deploy-rs.lib.x86_64-linux.activate.home-manager
-                inputs.dotfiles.legacyPackages.x86_64-linux.homeConfigurations."root";
+                inputs.dotfiles.homeConfigurations."root@x86_64-linux";
           };
         };
       };
