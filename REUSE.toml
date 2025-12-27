@@ -9,7 +9,8 @@ path = [
     "flake.nix",
     "hosts/**",
     "installer/**",
-    "nix/**",
+    "modules/**",
+    "nixos/**",
     "treefmt.nix",
 ]
 SPDX-FileCopyrightText = "Jonas Fierlings <fnoegip@gmail.com>"

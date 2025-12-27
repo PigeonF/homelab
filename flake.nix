@@ -69,15 +69,11 @@
 
         imports = [
           treefmt-nix.flakeModule
-          ./hosts/hl-ci-x-01
-          ./hosts/hl-dev-x-01
-          ./hosts/hl-dev-x-02
-          ./hosts/hl-vhost-x-01
+          ./hosts
           ./installer
-          ./nix/flake-modules/deploy-rs.nix
+          ./modules
+          ./nixos
         ];
-
-        flake = { };
 
         perSystem =
           { pkgs, ... }:
