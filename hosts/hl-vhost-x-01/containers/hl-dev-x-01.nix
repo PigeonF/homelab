@@ -1,12 +1,12 @@
-_: {
+{
   systemd = {
     nspawn = {
       "hl-dev-x-01" = {
         execConfig = {
           Boot = true;
-          #DropCabaility
-          #NoNewPrivileges
+          NoNewPrivileges = true;
           PrivateUsers = "pick";
+          # For docker
           Capability = "CAP_SETUID CAP_SETGID";
           SystemCallFilter = "@keyring bpf";
           LinkJournal = "try-guest";

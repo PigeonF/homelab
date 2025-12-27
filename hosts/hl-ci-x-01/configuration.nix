@@ -1,87 +1,28 @@
 {
-  pkgs,
-  lib,
-  nixpkgs,
-  modulesPath,
+  self,
   ...
 }:
+let
+  homelab = self;
+in
 {
   imports = [
-    (modulesPath + "/profiles/minimal.nix")
-    ./nspawn-container.nix
+    homelab.nixosModules.mixins-common
+    homelab.nixosModules.mixins-docker
+    homelab.nixosModules.mixins-environment
+    homelab.nixosModules.mixins-networking
+    homelab.nixosModules.mixins-nix
+    homelab.nixosModules.mixins-openssh
+    homelab.nixosModules.profiles-nspawn
   ];
 
-  environment = {
-    profiles = lib.mkForce [
-      "\${XDG_STATE_HOME:-$HOME/.local/state}/nix/profile"
-      "/etc/profiles/per-user/$USER"
-      "/nix/var/nix/profiles/default"
-      "/run/current-system/sw"
-    ];
-    sessionVariables = {
-      XDG_BIN_HOME = "$HOME/.local/bin";
-      XDG_CACHE_HOME = "$HOME/.cache";
-      XDG_CONFIG_HOME = "$HOME/.config";
-      XDG_DATA_HOME = "$HOME/.local/share";
-      XDG_STATE_HOME = "$HOME/.local/state";
-    };
-    variables = {
-      HISTFILE = "$XDG_STATE_HOME/bash/history";
-      LESSHISTFILE = "$XDG_STATE_HOME/less/history";
-    };
-  };
-
-  i18n = {
-    extraLocales = [ "all" ];
-  };
-
   networking = {
-    domain = "internal";
+    hostId = "417123ef";
     hostName = "hl-ci-x-01";
-    nftables = {
-      enable = true;
-    };
-  };
-
-  nix = {
-    channel = {
-      enable = false;
-    };
-    package = pkgs.nixVersions.stable;
-    registry = {
-      nixpkgs = {
-        flake = nixpkgs;
-      };
-    };
-    settings = {
-      auto-allocate-uids = false;
-      # download-buffer-size = 512 * 1024 * 1024;
-      extra-experimental-features = [
-        "flakes"
-        "nix-command"
-        "no-url-literals"
-        "auto-allocate-uids"
-        "cgroups"
-      ];
-      sandbox = true;
-      system-features = [ "uid-range" ];
-      trusted-users = [ ];
-      use-cgroups = true;
-      use-xdg-base-directories = true;
-    };
   };
 
   nixpkgs = {
     hostPlatform = "x86_64-linux";
-  };
-
-  security = {
-    sudo = {
-      extraConfig = ''
-        Defaults:root env_keep+=TERMINFO_DIRS
-        Defaults:root env_keep+=SSH_AUTH_SOCK
-      '';
-    };
   };
 
   services = {
@@ -109,73 +50,14 @@
         };
       };
     };
-    openssh = {
-      enable = true;
-      extraConfig = ''
-        AcceptEnv LANG LANGUAGE LC_*
-        AcceptEnv COLORTERM TERM TERM_*
-      '';
-      settings = {
-        Macs = [
-          "hmac-sha2-512"
-          "hmac-sha2-512-etm@openssh.com"
-          "hmac-sha2-256-etm@openssh.com"
-          "umac-128-etm@openssh.com"
-        ];
-      };
-    };
-    resolved = {
-      enable = true;
-      llmnr = "false";
-      extraConfig = ''
-        MulticastDNS=yes
-      '';
-    };
-    timesyncd = {
-      enable = true;
-    };
-    userborn = {
-      enable = false; # https://github.com/nikstur/userborn/issues/7
-    };
   };
 
   system = {
-    stateVersion = "25.05";
+    stateVersion = "25.11";
     disableInstallerTools = true;
   };
 
-  systemd = {
-    network = {
-      networks = {
-        "05-container-bridge" = {
-          matchConfig = {
-            Type = "bridge";
-            Name = "docker*";
-
-          };
-          linkConfig = {
-            Unmanaged = true;
-          };
-        };
-        "05-container-veth" = {
-          matchConfig = {
-            Type = "ether";
-            Name = "veth*";
-          };
-          linkConfig = {
-            Unmanaged = true;
-          };
-        };
-      };
-    };
-  };
-
-  time = {
-    timeZone = "Europe/Berlin";
-  };
-
   users = {
-    mutableUsers = false;
     users = {
       root = {
         openssh = {
@@ -186,12 +68,6 @@
           };
         };
       };
-    };
-  };
-
-  virtualisation = {
-    docker = {
-      enable = true;
     };
   };
 }

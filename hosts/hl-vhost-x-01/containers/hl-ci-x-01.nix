@@ -3,7 +3,7 @@
   sops = {
     secrets = {
       "hl-ci-x-01/gitlab-runner/auth-config-docker" = {
-        sopsFile = ./secrets/hl-ci-x-01.yaml;
+        sopsFile = ../secrets/hl-ci-x-01.yaml;
         key = "gitlab-runner/auth-config-docker";
         restartUnits = [ "systemd-nspawn@hl-ci-x-01.service" ];
       };
@@ -14,9 +14,9 @@
       "hl-ci-x-01" = {
         execConfig = {
           Boot = true;
-          #DropCabaility
-          #NoNewPrivileges
+          NoNewPrivileges = true;
           PrivateUsers = "pick";
+          # For docker
           Capability = "CAP_SETUID CAP_SETGID";
           SystemCallFilter = "@keyring bpf";
           LinkJournal = "try-guest";
