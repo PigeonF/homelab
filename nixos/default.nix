@@ -1,4 +1,5 @@
 {
+  imports = [ ./pkgs/bootstrap-nspawn.nix ];
   flake = {
     nixosModules = {
       mixins-boot = ./mixins/boot.nix;
