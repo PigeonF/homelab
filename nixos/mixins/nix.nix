@@ -5,6 +5,19 @@
   ...
 }:
 {
+  nixpkgs = {
+    overlays = [
+      (final: _prev: {
+        inherit (final.lixPackageSets.stable)
+          nixpkgs-review
+          nix-direnv
+          nix-eval-jobs
+          nix-fast-build
+          colmena
+          ;
+      })
+    ];
+  };
   nix = {
     channel = {
       enable = false;
@@ -15,7 +28,7 @@
     optimise = {
       automatic = !config.boot.isContainer;
     };
-    package = pkgs.nixVersions.stable;
+    package = pkgs.lixPackageSets.stable.lix;
     registry = {
       nixpkgs = {
         flake = nixpkgs;
