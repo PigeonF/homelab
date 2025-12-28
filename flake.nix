@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=refs/heads/release-25.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs?ref=refs/heads/master";
     systems.url = "github:nix-systems/default?ref=refs/heads/main";
 
     deploy-rs = {
@@ -20,6 +21,7 @@
       inputs.flake-parts.follows = "flake-parts";
       inputs.home-manager.follows = "home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
       inputs.systems.follows = "systems";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };

@@ -2,6 +2,7 @@
   config,
   pkgs,
   nixpkgs,
+  nixpkgs-unstable,
   ...
 }:
 {
@@ -32,6 +33,9 @@
     registry = {
       nixpkgs = {
         flake = nixpkgs;
+      };
+      nixpkgs-unstable = {
+        flake = nixpkgs-unstable;
       };
     };
     settings = {
