@@ -46,11 +46,9 @@ in
     };
   };
 
-  perSystem =
-    { pkgs, ... }:
-    {
-      packages = {
-        hl-ci-x-01 = hl-ci-x-01.config.system.build.toplevel;
-      };
+  perSystem = {
+    packages = {
+      hl-ci-x-01 = hl-ci-x-01.config.system.build.toplevel;
     };
+  };
 }

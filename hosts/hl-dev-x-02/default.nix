@@ -20,11 +20,9 @@ in
     };
   };
 
-  perSystem =
-    { pkgs, ... }:
-    {
-      packages = {
-        hl-dev-x-02 = hl-dev-x-02.config.system.build.toplevel;
-      };
+  perSystem = {
+    packages = {
+      hl-dev-x-02 = hl-dev-x-02.config.system.build.toplevel;
     };
+  };
 }
