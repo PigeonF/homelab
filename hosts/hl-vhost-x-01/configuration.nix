@@ -13,6 +13,7 @@ in
   imports = [
     ./networking.nix
     ./containers/hl-ci-x-01.nix
+    ./containers/hl-ci-x-02.nix
     ./containers/hl-dev-x-01.nix
     ./containers/hl-dev-x-02.nix
     homelab.nixosModules.mixins-boot
