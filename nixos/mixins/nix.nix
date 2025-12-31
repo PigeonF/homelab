@@ -44,16 +44,16 @@
       auto-allocate-uids = !config.boot.isNspawnContainer;
       # download-buffer-size = 512 * 1024 * 1024;
       extra-experimental-features = [
+        "auto-allocate-uids"
+        "cgroups"
         "flakes"
         "nix-command"
         "no-url-literals"
-        "auto-allocate-uids"
-        "cgroups"
       ];
       sandbox = true;
       system-features = [ "uid-range" ];
       trusted-users = [ "@wheel" ];
-      use-cgroups = true;
+      use-cgroups = !config.boot.isNspawnContainer;
       use-xdg-base-directories = true;
     };
   };
