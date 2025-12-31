@@ -35,7 +35,6 @@ in
       gracefulTimeout = "30s";
       settings = {
         concurrent = 8;
-        check_interval = 15;
       };
       services = {
         docker = {
