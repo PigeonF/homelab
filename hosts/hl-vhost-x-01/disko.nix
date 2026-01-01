@@ -152,6 +152,7 @@
                       "noatime"
                     ];
                   };
+                  "/var/lib/chroots" = { };
                   "/var/lib/containers" = { };
                   "/var/lib/machines" = { };
                 };
