@@ -20,28 +20,12 @@ in
         hostname = "hl-dev-x-01";
         profilesOrder = [
           "system"
-          "homeManager.root"
-          "homeManager.developer"
         ];
         profiles = {
           system = {
             user = "root";
             sshUser = "developer";
             path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos hl-dev-x-01;
-          };
-          "homeManager.root" = {
-            user = "root";
-            sshUser = "developer";
-            path =
-              inputs.deploy-rs.lib.x86_64-linux.activate.home-manager
-                inputs.dotfiles.homeConfigurations."root@x86_64-linux";
-          };
-          "homeManager.developer" = {
-            user = "developer";
-            sshUser = "developer";
-            path =
-              inputs.deploy-rs.lib.x86_64-linux.activate.home-manager
-                inputs.dotfiles.homeConfigurations."developer@hl-dev-x-01";
           };
         };
       };

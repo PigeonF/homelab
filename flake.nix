@@ -18,7 +18,9 @@
     };
     dotfiles = {
       url = "github:PigeonF/dotfiles?ref=refs/heads/main";
+      inputs.deploy-rs.follows = "deploy-rs";
       inputs.flake-parts.follows = "flake-parts";
+      inputs.flake-utils.follows = "flake-utils";
       inputs.home-manager.follows = "home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
