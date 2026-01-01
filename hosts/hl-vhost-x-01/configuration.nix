@@ -4,6 +4,7 @@
   nixos-facter-modules,
   sops-nix,
   self,
+  pkgs,
   ...
 }:
 let
@@ -56,6 +57,17 @@ in
     };
   };
 
+  environment = {
+    etc = {
+      "qemu/firmware".source = "${pkgs.qemu_kvm}/share/qemu/firmware";
+    };
+    systemPackages = [
+      pkgs.qemu_kvm
+      pkgs.swtpm
+      pkgs.virtiofsd
+    ];
+  };
+
   networking = {
     hostId = "5ee11178";
     hostName = "hl-vhost-x-01";
@@ -75,6 +87,11 @@ in
 
   system = {
     stateVersion = "25.11";
+  };
+
+  systemd = {
+    additionalUpstreamSystemUnits = [ "systemd-vmspawn@.service" ];
+    additionalUpstreamUserUnits = [ "systemd-vmspawn@.service" ];
   };
 
   users = {
