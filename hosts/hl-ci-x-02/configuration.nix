@@ -45,6 +45,8 @@ in
             "--docker-volumes /builds"
             "--docker-volumes /cache"
             "--docker-volumes /var/lib/containers"
+            "--env FF_NETWORK_PER_BUILD=true"
+            "--env FF_SCRIPT_SECTIONS=true"
           ];
         };
       };
