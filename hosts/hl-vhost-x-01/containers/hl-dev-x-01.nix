@@ -4,7 +4,8 @@
       "hl-dev-x-01" = {
         execConfig = {
           Boot = true;
-          NoNewPrivileges = true;
+          # For sudo
+          NoNewPrivileges = false;
           PrivateUsers = "pick";
           # For docker
           Capability = "CAP_SETUID CAP_SETGID";
