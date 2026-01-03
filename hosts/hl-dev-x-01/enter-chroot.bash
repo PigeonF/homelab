@@ -37,5 +37,5 @@ fi
 
 $_sudo mv "$tmpfile" env.sh
 $_sudo chroot . /usr/bin/env -i su -l "$user" \
-    sh -l -c ". /etc/profile; . /env.sh; cd '$oldpwd' 2>/dev/null; export ENV=\$HOME/.profile; \"\$@\"" \
+    sh -c ". /etc/profile; . /env.sh; cd '$oldpwd' 2>/dev/null; export ENV=\$HOME/.profile; \"\$@\"" \
     -- "${@:-sh}"

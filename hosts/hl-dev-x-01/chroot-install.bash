@@ -381,6 +381,13 @@ einfo 'Setting up Alpine'
     if [ -n "${SUDO_USER:-}" ]; then
         adduser -u "${SUDO_UID:-1000}" -G users -s /bin/sh -D "${SUDO_USER}" || true
         addgroup "${SUDO_USER}" wheel || true
+
+        apk add git cargo
+        cargo install dotter --root /usr/local
+        su -l "${SUDO_USER}" sh -c "git clone https://github.com/PigeonF/dotfiles.git ~/dotfiles"
+        sed -n '/^[^#]/p' "$(getent passwd "${SUDO_USER}" | cut -d: -f6)/dotfiles/alpine-chroot.txt" | xargs apk add
+        su -l "${SUDO_USER}" sh -c "ln -s ~/dotfiles/.dotter/alpine-chroot.toml ~/dotfiles/.dotter/local.toml"
+        su -l "${SUDO_USER}" sh -c "cd ~/dotfiles && dotter"
     fi
 EOF
 
