@@ -1,5 +1,6 @@
 {
   self,
+  pkgs,
   ...
 }:
 let
@@ -15,6 +16,10 @@ in
     homelab.nixosModules.mixins-openssh
     homelab.nixosModules.profiles-nspawn
   ];
+
+  environment = {
+    systemPackages = [ pkgs.socat ];
+  };
 
   networking = {
     hostId = "5eeea9df";
