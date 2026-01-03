@@ -2,12 +2,18 @@
   _file = ./default.nix;
 
   perSystem =
-    { self', pkgs, ... }:
+    {
+      self',
+      lib,
+      pkgs,
+      ...
+    }:
     {
       apps = {
         bootstrap-nspawn = {
           type = "app";
-          program = self'.packages.bootstrap-nspawn;
+          program = lib.getExe self'.packages.bootstrap-nspawn;
+          meta.description = "Bootstrap a nspawn container nixosConfiguration";
         };
       };
 

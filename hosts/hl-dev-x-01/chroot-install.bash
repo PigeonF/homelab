@@ -43,10 +43,6 @@ set -o pipefail
 #   -d CHROOT_DIR          Absolute path to the directory where Alpine chroot
 #                          should be installed (default is /alpine).
 #
-#   -i BIND_DIR            Absolute path to the directory on the host system that
-#                          should be mounted on the same path inside the chroot
-#                          (default is PWD, if it's under /home, or none).
-#
 #   -k CHROOT_KEEP_VARS... Names of the environment variables to pass from the
 #                          host environment into chroot by the enter-chroot
 #                          script. Name may be an extended regular expression.
@@ -229,6 +225,14 @@ gen_destroy_script() {
         SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
         [ "$(id -u)" -eq 0 ] || _sudo='sudo'
 
+        if mountpoint "$SCRIPT_DIR/dev" &>/dev/null; then
+            umount -lfn "$SCRIPT_DIR/dev"
+        fi
+
+        if mountpoint "$SCRIPT_DIR/sys" &>/dev/null; then
+            umount -lfn "$SCRIPT_DIR/sys"
+        fi
+
         # Unmounts all filesystem under the specified directory tree.
         cat /proc/mounts | cut -d' ' -f2 | grep "^$SCRIPT_DIR." | sort -r | while read path; do
             echo "Unmounting $path" >&2
@@ -250,12 +254,11 @@ EOF
 
 #============================  M a i n  ============================#
 
-while getopts 'a:b:d:i:k:m:p:r:t:hv' OPTION; do
+while getopts 'a:b:d:k:m:p:t:hv' OPTION; do
     case "$OPTION" in
         a) ARCH="$OPTARG";;
         b) ALPINE_BRANCH="$OPTARG";;
         d) CHROOT_DIR="$OPTARG";;
-        i) BIND_DIR="$OPTARG";;
         k) CHROOT_KEEP_VARS="${CHROOT_KEEP_VARS:-} $OPTARG";;
         m) ALPINE_MIRROR="$OPTARG";;
         p) ALPINE_PACKAGES="${ALPINE_PACKAGES:-} $OPTARG";;
@@ -268,7 +271,7 @@ done
 
 : "${ALPINE_BRANCH:="latest-stable"}"
 : "${ALPINE_MIRROR:="http://dl-cdn.alpinelinux.org/alpine"}"
-: "${ALPINE_PACKAGES:="build-base ca-certificates cargo doas git openssh ssl_client"}"
+: "${ALPINE_PACKAGES:="build-base ca-certificates doas ssl_client"}"
 : "${ARCH:=}"
 : "${BIND_DIR:=}"
 : "${CHROOT_DIR:="/alpine"}"
@@ -341,29 +344,6 @@ gen_chroot_script > enter-chroot
 gen_destroy_script > destroy
 chmod +x enter-chroot destroy
 
-
-einfo 'Binding filesystems into chroot'
-
-mount -v -t proc none proc
-mount -v --rbind /sys sys
-mount --make-rprivate sys
-mount -v --rbind /dev dev
-mount --make-rprivate dev
-
-# Some systems (Ubuntu?) symlinks /dev/shm to /run/shm.
-if [ -L /dev/shm ] && [ -d /run/shm ]; then
-    mkdir -p run/shm
-    mount -v --bind /run/shm run/shm
-    mount --make-private run/shm
-fi
-
-if [ -d "$BIND_DIR" ]; then
-    mkdir -p "${CHROOT_DIR}${BIND_DIR}"
-    mount -v --bind "$BIND_DIR" "${CHROOT_DIR}${BIND_DIR}"
-    mount --make-private "${CHROOT_DIR}${BIND_DIR}"
-fi
-
-
 einfo 'Setting up Alpine'
 
 ./enter-chroot <<-EOF
@@ -383,11 +363,10 @@ einfo 'Setting up Alpine'
         adduser -u "${SUDO_UID:-1000}" -G users -s /bin/sh -D "${SUDO_USER}" || true
         addgroup "${SUDO_USER}" wheel || true
 
-        apk add git cargo
+        apk add cargo git openssh
         cargo install dotter --root /usr/local
         su -l "${SUDO_USER}" sh -c "git clone https://github.com/PigeonF/dotfiles.git ~/dotfiles"
         sed -n '/^[^#]/p' "$(getent passwd "${SUDO_USER}" | cut -d: -f6)/dotfiles/alpine-chroot.txt" | xargs apk add
-        su -l "${SUDO_USER}" sh -c "ln -s ~/dotfiles/.dotter/alpine-chroot.toml ~/dotfiles/.dotter/local.toml"
         su -l "${SUDO_USER}" sh -c "cd ~/dotfiles && dotter"
     fi
 EOF

@@ -39,9 +39,16 @@ in
   };
 
   perSystem =
-    { pkgs, ... }:
+    { self', pkgs, ... }:
     {
-      packages = rec {
+      apps = {
+        alpine-install-chroot = {
+          type = "app";
+          program = lib.getExe self'.packages.alpine-install-chroot;
+          meta.description = "Download and install an alpine installation into a chroot";
+        };
+      };
+      packages = {
         alpine-enter-chroot = pkgs.writeShellApplication {
           name = "enter-chroot";
           runtimeInputs = [
@@ -60,7 +67,7 @@ in
           text = builtins.readFile ./chroot-install.bash;
           bashOptions = [ ];
           runtimeEnv = {
-            ENTER_CHROOT_SCRIPT = lib.getExe alpine-enter-chroot;
+            ENTER_CHROOT_SCRIPT = lib.getExe self'.packages.alpine-enter-chroot;
           };
         };
       };
