@@ -51,6 +51,15 @@ in
           text = builtins.readFile ./enter-chroot.bash;
           bashOptions = [ ];
         };
+        alpine-install-chroot = pkgs.writeShellApplication {
+          name = "alpine-install-chroot";
+          runtimeInputs = [
+            pkgs.coreutils
+            pkgs.curl
+          ];
+          text = builtins.readFile ./chroot-install.bash;
+          bashOptions = [ ];
+        };
       };
     };
 }
