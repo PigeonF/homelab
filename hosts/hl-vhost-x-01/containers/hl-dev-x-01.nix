@@ -7,8 +7,8 @@
           # For sudo
           NoNewPrivileges = false;
           PrivateUsers = "pick";
-          # For docker
-          Capability = "CAP_SETUID CAP_SETGID";
+          # For docker and chroots
+          Capability = "CAP_SETUID CAP_SETGID CAP_SYS_ADMIN";
           SystemCallFilter = "@keyring bpf";
           LinkJournal = "try-guest";
           Timezone = "off";
