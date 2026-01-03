@@ -19,10 +19,4 @@ in
       inherit hl-dev-x-02;
     };
   };
-
-  perSystem = {
-    packages = {
-      hl-dev-x-02 = hl-dev-x-02.config.system.build.toplevel;
-    };
-  };
 }

@@ -1,4 +1,4 @@
-{ self, lib, ... }:
+{ lib, ... }:
 {
   _file = ./default.nix;
 
@@ -22,14 +22,5 @@
         nixos-installer-aarch64 = nixos-installer "aarch64-linux";
         nixos-installer-x86_64 = nixos-installer "x86_64-linux";
       };
-  };
-
-  perSystem = _: {
-    packages = {
-      nixos-installer-aarch64 =
-        self.nixosConfigurations.nixos-installer-aarch64.config.system.build.isoImage;
-      nixos-installer-x86_64 =
-        self.nixosConfigurations.nixos-installer-x86_64.config.system.build.isoImage;
-    };
   };
 }

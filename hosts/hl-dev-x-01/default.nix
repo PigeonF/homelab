@@ -42,8 +42,6 @@ in
     { pkgs, ... }:
     {
       packages = {
-        hl-dev-x-01 = hl-dev-x-01.config.system.build.toplevel;
-
         alpine-enter-chroot = pkgs.writeShellApplication {
           name = "enter-chroot";
           runtimeInputs = [

@@ -37,10 +37,4 @@ in
       inherit hl-ci-x-02;
     };
   };
-
-  perSystem = {
-    packages = {
-      hl-ci-x-02 = hl-ci-x-02.config.system.build.toplevel;
-    };
-  };
 }

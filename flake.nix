@@ -58,6 +58,7 @@
   outputs =
     inputs@{
       flake-parts,
+      self,
       systems,
       treefmt-nix,
       ...
@@ -80,19 +81,34 @@
         ];
 
         perSystem =
-          { pkgs, ... }:
+          {
+            self',
+            lib,
+            pkgs,
+            system,
+            ...
+          }:
           {
             treefmt = import ./treefmt.nix;
 
-            checks = {
-              reuse =
-                let
-                  files = pkgs.nix-gitignore.gitignoreSourcePure [ ] (pkgs.lib.cleanSource ./.);
-                in
-                pkgs.runCommandLocal "reuse" { } ''
-                  ${pkgs.lib.getExe pkgs.reuse} --root ${files} lint | tee $out
-                '';
-            };
+            checks =
+              let
+                devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
+                nixosConfigurations = lib.mapAttrs' (
+                  n: v: lib.nameValuePair "nixosConfigurations-${n}" v.config.system.build.toplevel
+                ) ((lib.filterAttrs (_: v: v.pkgs.stdenv.hostPlatform.system == system)) self.nixosConfigurations);
+                packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") self'.packages;
+                custom = {
+                  reuse =
+                    let
+                      files = pkgs.nix-gitignore.gitignoreSourcePure [ ] (pkgs.lib.cleanSource ./.);
+                    in
+                    pkgs.runCommandLocal "reuse" { } ''
+                      ${pkgs.lib.getExe pkgs.reuse} --root ${files} lint | tee $out
+                    '';
+                };
+              in
+              devShells // nixosConfigurations // packages // custom;
           };
       });
 }

@@ -37,10 +37,4 @@ in
       inherit hl-vhost-x-01;
     };
   };
-
-  perSystem = _: {
-    packages = {
-      hl-vhost-x-01 = hl-vhost-x-01.config.system.build.toplevel;
-    };
-  };
 }
