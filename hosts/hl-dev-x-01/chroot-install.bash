@@ -16,8 +16,6 @@ set -o pipefail
 # qemu-user and binfmt to emulate different architecture (e.g. armhf).
 #
 # If qemu-user and binfmt is needed, the script checks if both are available.
-# If not, it tries to install them using apt-get. Beside this the script should
-# work on any Linux system.
 #
 # It also creates script "enter-chroot" inside the chroot directory, that may
 # be used to enter the chroot environment. That script do the following:
@@ -178,6 +176,11 @@ usage() {
 }
 
 gen_chroot_script() {
+    if [ -n "${ENTER_CHROOT_SCRIPT:-}" ]; then
+        cat "$ENTER_CHROOT_SCRIPT"
+        return
+    fi
+
     cat <<-EOF
         #!/bin/sh
         set -e
@@ -244,35 +247,6 @@ gen_destroy_script() {
 EOF
 }
 
-#------------------------- Debian/Ubuntu ---------------------------#
-
-APT_UPDATED=no
-
-apt_install() {
-    if [ "$APT_UPDATED" != yes ]; then
-        apt-get update
-        APT_UPDATED=yes
-    fi
-    # -o=Dpkg::Use-Pty=0 - get rid of annoying "Reading database ..." messages.
-    apt-get install -y -o=Dpkg::Use-Pty=0 --no-install-recommends "$@"
-}
-
-# Installs and enables binfmt-support on Debian/Ubuntu host.
-install_binfmt_support() {
-    apt_install binfmt-support \
-        || die 'Failed to install binfmt-support using apt-get!'
-
-    update-binfmts --enable \
-        || die 'Failed to enable binfmt!'
-}
-
-# Installs QEMU user mode emulation binaries on Debian/Ubuntu host.
-install_qemu_user() {
-    apt_install qemu-user-static \
-        || die 'Failed to install qemu-user-static using apt-get!'
-}
-
-
 #============================  M a i n  ============================#
 
 while getopts 'a:b:d:i:k:m:p:r:t:hv' OPTION; do
@@ -293,20 +267,12 @@ done
 
 : "${ALPINE_BRANCH:="latest-stable"}"
 : "${ALPINE_MIRROR:="http://dl-cdn.alpinelinux.org/alpine"}"
-: "${ALPINE_PACKAGES:="build-base ca-certificates ssl_client"}"
+: "${ALPINE_PACKAGES:="build-base ca-certificates cargo doas git openssh ssl_client"}"
 : "${ARCH:=}"
 : "${BIND_DIR:=}"
 : "${CHROOT_DIR:="/alpine"}"
 : "${CHROOT_KEEP_VARS:="ARCH CI QEMU_EMULATOR TRAVIS_.*"}"
 : "${TEMP_DIR:=$(mktemp -d || echo /tmp/alpine)}"
-
-# Note: Binding $PWD into chroot as default was a bad idea. It's convenient
-# on Travis, but dangerous in general. However, all existing .travis.yml relies
-# on this behaviour, so we can't (shouldn't) remove it completely.
-[ "$BIND_DIR" ] || case "$(pwd)" in
-    /home/*) BIND_DIR="$(pwd)";;
-esac
-
 
 if [ "$(id -u)" -ne 0 ]; then
     die 'This script must be run as root!'
@@ -316,21 +282,17 @@ mkdir -p "$CHROOT_DIR"
 cd "$CHROOT_DIR"
 
 
-# Install QEMU user mode emulation if needed (works only on Debian and derivates)
-
 QEMU_EMULATOR=''
 if [ -n "${ARCH:-}" ] && [ "$(normalize_arch "${ARCH:-}")" != "$(normalize_arch "$(uname -m)")" ]; then
     qemu_arch="$(normalize_arch "$ARCH")"
-    QEMU_EMULATOR="/usr/bin/qemu-$qemu_arch-static"
+    QEMU_EMULATOR=$(command -v "qemu-$qemu_arch-static" || true)
 
     if [ ! -x "$QEMU_EMULATOR" ]; then
-        einfo 'Installing qemu-user-static on host system...'
-        install_qemu_user
+        die 'Missing qemu-user-static!'
     fi
 
     if [ ! -e "/proc/sys/fs/binfmt_misc/qemu-$qemu_arch" ]; then
-        einfo 'Installing and enabling binfmt-support on host system...'
-        install_binfmt_support
+        die 'Failed to enable binfmt!'
     fi
 
     mkdir -p usr/bin
@@ -412,8 +374,13 @@ einfo 'Setting up Alpine'
         echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/wheel
     fi
 
+    if [ -d /etc/doas.d ] && [ ! -e /etc/doas.d/wheel.conf ]; then
+        echo 'permit nopass :wheel as root' > /etc/doas.d/wheel.conf
+    fi
+
     if [ -n "${SUDO_USER:-}" ]; then
-        adduser -u "${SUDO_UID:-1000}" -G users -s /bin/sh -D "${SUDO_USER:-}" || true
+        adduser -u "${SUDO_UID:-1000}" -G users -s /bin/sh -D "${SUDO_USER}" || true
+        addgroup "${SUDO_USER}" wheel || true
     fi
 EOF
 

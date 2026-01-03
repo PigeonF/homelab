@@ -41,7 +41,7 @@ in
   perSystem =
     { pkgs, ... }:
     {
-      packages = {
+      packages = rec {
         alpine-enter-chroot = pkgs.writeShellApplication {
           name = "enter-chroot";
           runtimeInputs = [
@@ -59,6 +59,9 @@ in
           ];
           text = builtins.readFile ./chroot-install.bash;
           bashOptions = [ ];
+          runtimeEnv = {
+            ENTER_CHROOT_SCRIPT = lib.getExe alpine-enter-chroot;
+          };
         };
       };
     };
