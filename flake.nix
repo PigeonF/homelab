@@ -80,6 +80,14 @@
           ./nixos
         ];
 
+        flake = {
+
+          lib = {
+            foo = a: a + "-foo";
+          };
+
+        };
+
         perSystem =
           {
             self',
