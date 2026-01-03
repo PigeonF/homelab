@@ -14,8 +14,11 @@ in
       # After booting, register the contents of the Nix store in the Nix database.
       if [ -f /nix-path-registration ]; then
         ${config.nix.package.out}/bin/nix-store --load-db < /nix-path-registration &&
-        rm /nix-path-registration
+        ${pkgs.coreutils}/bin/rm /nix-path-registration
       fi
+
+      # nixos-rebuild also requires a "system" profile
+      ${config.nix.package.out}/bin/nix-env -p /nix/var/nix/profiles/system --set /run/current-system
     '';
     specialFileSystems = {
       "/dev".enable = false;
@@ -41,7 +44,7 @@ in
   system = {
     activationScripts = {
       installInitScript = lib.mkForce ''
-        ln -fs "$systemConfig/init" /sbin/init
+        ${pkgs.coreutils}/bin/ln -fs "$systemConfig/init" /sbin/init
       '';
     };
     build = {
@@ -61,13 +64,13 @@ in
           }
         ];
         extraCommands = pkgs.writeScript "extra-commands" ''
-          mkdir -p proc sys dev sbin
-          ln -sf /nix/var/nix/profiles/system/init sbin/init
+          ${pkgs.coreutils}/bin/mkdir -p proc sys dev sbin
+          ${pkgs.coreutils}/bin/ln -sf /nix/var/nix/profiles/system/init sbin/init
         '';
       };
       installBootLoader = pkgs.writeScript "install-sbin-init.sh" ''
         #!${pkgs.runtimeShell}
-        ln -fs "$1/init" /sbin/init
+        ${pkgs.coreutils}/bin/ln -fs "$1/init" /sbin/init
       '';
     };
   };
