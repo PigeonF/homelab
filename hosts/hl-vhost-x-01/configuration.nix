@@ -50,6 +50,10 @@ in
   ];
 
   boot = {
+    binfmt = {
+      emulatedSystems = [ "aarch64-linux" ];
+      preferStaticEmulators = true;
+    };
     loader = {
       efi = {
         canTouchEfiVariables = true;
