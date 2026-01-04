@@ -30,6 +30,12 @@ in
     hostPlatform = "x86_64-linux";
   };
 
+  programs = {
+    nix-ld = {
+      enable = true;
+    };
+  };
+
   security = {
     sudo = {
       wheelNeedsPassword = false;
