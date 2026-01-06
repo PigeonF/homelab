@@ -42,6 +42,8 @@ in
           dockerImage = "docker.io/busybox:latest";
           executor = "docker";
           registrationFlags = [
+            # TODO(PigeonF): Figure out a way to drop this (e.g. different nspawn settings)
+            "--docker-cap-add SYS_ADMIN"
             "--docker-pull-policy if-not-present"
             "--docker-volumes /builds"
             "--docker-volumes /cache"

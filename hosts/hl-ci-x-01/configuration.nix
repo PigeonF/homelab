@@ -42,6 +42,7 @@ in
           dockerImage = "docker.io/busybox:latest";
           executor = "docker";
           registrationFlags = [
+            "--docker-cap-add SYS_ADMIN"
             "--docker-pull-policy if-not-present"
             "--docker-volumes /builds"
             "--docker-volumes /cache"
