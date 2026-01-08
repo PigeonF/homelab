@@ -14,6 +14,7 @@ in
     homelab.nixosModules.mixins-networking
     homelab.nixosModules.mixins-nix
     homelab.nixosModules.mixins-openssh
+    homelab.nixosModules.mixins-podman
     homelab.nixosModules.profiles-nspawn
   ];
 

@@ -75,14 +75,25 @@ in
     };
   };
   systemd = {
+    # https://github.com/NixOS/nixpkgs/issues/405256
+    mounts = [
+      {
+        description = "Procfs for rootless containers";
+        after = [ "systemd-tmpfiles-setup.service" ];
+        before = [ "local-fs.target" ];
+        what = "proc";
+        where = "/proc2";
+        type = "proc";
+        options = "nosuid,noexec,nodev";
+        wantedBy = [ "multi-user.target" ];
+      }
+    ];
     network = {
       enable = true;
     };
-    services = {
-      nix-daemon = {
-        # https://github.com/NixOS/nixpkgs/issues/405256
-        preStart = "mount proc -t proc /proc";
-      };
+    tmpfiles = {
+      # TODO(PigeonF): Double check permissions
+      rules = [ "d /proc2 0555 root root -" ];
     };
   };
 }

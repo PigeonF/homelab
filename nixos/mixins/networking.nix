@@ -13,9 +13,9 @@
       useNetworkd = true;
     };
     services = {
-      firewalld = {
-        enable = true;
-      };
+      # firewalld = {
+      #   enable = true;
+      # };
       resolved = {
         enable = true;
         llmnr = "false";

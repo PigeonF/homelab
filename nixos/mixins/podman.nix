@@ -1,8 +1,7 @@
 {
   virtualisation = {
-    docker = {
+    podman = {
       enable = true;
-      storageDriver = "btrfs";
     };
   };
 }
