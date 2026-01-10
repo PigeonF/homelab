@@ -56,6 +56,8 @@ in
         "armv7l-linux"
         "i686-linux"
         "powerpc64le-linux"
+        "riscv64-linux"
+        "s390x-linux"
       ];
       preferStaticEmulators = true;
     };
