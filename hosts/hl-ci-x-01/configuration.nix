@@ -30,6 +30,7 @@ in
       enable = true;
       clear-docker-cache = {
         enable = true;
+        dates = "Mon,Wed,Fri";
       };
       gracefulTermination = true;
       gracefulTimeout = "30s";
@@ -46,7 +47,7 @@ in
             "--docker-pull-policy if-not-present"
             "--docker-volumes /builds"
             "--docker-volumes /cache"
-            "--docker-volumes /var/lib/containers"
+            "--docker-volumes /var/lib/containers/cache"
             "--env FF_NETWORK_PER_BUILD=true"
             "--env FF_SCRIPT_SECTIONS=true"
           ];
