@@ -11,6 +11,7 @@ path = [
     "installer/**",
     "modules/**",
     "nixos/**",
+    "overlays/**",
     "treefmt.nix",
 ]
 SPDX-FileCopyrightText = "Jonas Fierlings <fnoegip@gmail.com>"

@@ -1,0 +1,24 @@
+diff --git a/common/config.go b/common/config.go
+index ea8e08409f61bdf2..b185bdc3df885577 100644
+--- a/common/config.go
++++ b/common/config.go
+@@ -269,6 +269,7 @@ type DockerConfig struct {
+ 	DeviceCgroupRules          []string            `toml:"device_cgroup_rules,omitempty" json:"device_cgroup_rules,omitempty" long:"device-cgroup-rules" env:"DOCKER_DEVICE_CGROUP_RULES" description:"Add a device cgroup rule to the container"`
+ 	Gpus                       string              `toml:"gpus,omitempty" json:"gpus" long:"gpus" env:"DOCKER_GPUS" description:"Request GPUs to be used by Docker"`
+ 	ServicesDevices            map[string][]string `toml:"services_devices,omitempty" json:"services_devices,omitempty" long:"services_devices" env:"DOCKER_SERVICES_DEVICES" description:"A toml table/json object with the format key=values. Expose host devices to services based on image name."`
++	ServicesCapAdd             []string            `toml:"services_cap_add" json:"services_cap_add,omitempty" long:"services-cap-add" env:"DOCKER_SERVICES_CAP_ADD" description:"Add Linux capabilities to services"`
+ 	DisableCache               bool                `toml:"disable_cache,omitzero" json:"disable_cache" long:"disable-cache" env:"DOCKER_DISABLE_CACHE" description:"Disable all container caching"`
+ 	Volumes                    []string            `toml:"volumes,omitempty" json:"volumes,omitempty" long:"volumes" env:"DOCKER_VOLUMES" description:"Bind-mount a volume and create it if it doesn't exist prior to mounting. Can be specified multiple times once per mountpoint, e.g. --docker-volumes 'test0:/test0' --docker-volumes 'test1:/test1'"`
+ 	VolumeDriver               string              `toml:"volume_driver,omitempty" json:"volume_driver" long:"volume-driver" env:"DOCKER_VOLUME_DRIVER" description:"Volume driver to be used"`
+diff --git a/executors/docker/docker.go b/executors/docker/docker.go
+index b46ffeb56c9b050b..77025e1e817a9c98 100644
+--- a/executors/docker/docker.go
++++ b/executors/docker/docker.go
+@@ -534,6 +534,7 @@ func (e *executor) createHostConfigForService(imageIsPrivileged bool, devices []
+ 		RestartPolicy: neverRestartPolicy,
+ 		ExtraHosts:    e.Config.Docker.ExtraHosts,
+ 		Privileged:    privileged,
++		CapAdd:        e.Config.Docker.ServicesCapAdd,
+ 		SecurityOpt:   e.Config.Docker.ServicesSecurityOpt,
+ 		Runtime:       e.Config.Docker.Runtime,
+ 		UsernsMode:    container.UsernsMode(e.Config.Docker.UsernsMode),

@@ -81,11 +81,13 @@
         ];
 
         flake = {
-
-          lib = {
-            foo = a: a + "-foo";
+          overlays = {
+            patchedPackages = final: _: {
+              patchedPackages = {
+                gitlab-runner = final.callPackage ./overlays/gitlab-runner { };
+              };
+            };
           };
-
         };
 
         perSystem =

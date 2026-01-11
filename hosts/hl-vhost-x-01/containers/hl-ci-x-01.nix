@@ -17,7 +17,7 @@
           NoNewPrivileges = true;
           PrivateUsers = "pick";
           # For docker
-          Capability = "CAP_SETUID CAP_SETGID";
+          Capability = "CAP_SETUID CAP_SETGID CAP_SYS_ADMIN";
           SystemCallFilter = "@keyring bpf";
           LinkJournal = "try-guest";
           Timezone = "off";

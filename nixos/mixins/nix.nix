@@ -1,4 +1,5 @@
 {
+  self,
   config,
   pkgs,
   nixpkgs,
@@ -8,6 +9,7 @@
 {
   nixpkgs = {
     overlays = [
+      self.overlays.patchedPackages
       (final: _prev: {
         inherit (final.lixPackageSets.stable)
           nixpkgs-review
