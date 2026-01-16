@@ -99,6 +99,12 @@ in
             "auth-config-docker" = config.sops.secrets."hl-ci-x-02/gitlab-runner/auth-config-docker".path;
           };
         };
+        "hl-ci-x-03" = {
+          enableDocker = true;
+          secrets = {
+            "auth-config-docker" = config.sops.secrets."hl-ci-x-03/gitlab-runner/auth-config-docker".path;
+          };
+        };
       };
     };
   };
@@ -115,16 +121,16 @@ in
   };
 
   sops = {
+    defaultSopsFile = ./secrets.yaml;
     secrets = {
       "hl-ci-x-01/gitlab-runner/auth-config-docker" = {
-        sopsFile = ./secrets/hl-ci-x-01.yaml;
-        key = "gitlab-runner/auth-config-docker";
         restartUnits = [ "systemd-nspawn@hl-ci-x-01.service" ];
       };
       "hl-ci-x-02/gitlab-runner/auth-config-docker" = {
-        sopsFile = ./secrets/hl-ci-x-02.yaml;
-        key = "gitlab-runner/auth-config-docker";
         restartUnits = [ "systemd-nspawn@hl-ci-x-02.service" ];
+      };
+      "hl-ci-x-03/gitlab-runner/auth-config-docker" = {
+        restartUnits = [ "systemd-nspawn@hl-ci-x-03.service" ];
       };
     };
   };
@@ -155,6 +161,13 @@ in
           CPUQuota = "400%";
           MemoryHigh = "8G";
           MemoryMax = "12G";
+        };
+      };
+      "systemd-nspawn@hl-ci-x-03" = {
+        serviceConfig = {
+          CPUQuota = "200%";
+          MemoryHigh = "6G";
+          MemoryMax = "8G";
         };
       };
     };

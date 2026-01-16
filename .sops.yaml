@@ -11,7 +11,7 @@ creation_rules:
       - age:
           - *pigeonf
           - *hl-vhost-x-01
-    path_regex: ^hosts/hl-vhost-x-01/secrets/.+\.yaml$
+    path_regex: ^hosts/hl-vhost-x-01/(secrets/.+\.yaml|secrets\.yaml)$
 stores:
   yaml:
     indent: 2

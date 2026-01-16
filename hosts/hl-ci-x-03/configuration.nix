@@ -17,8 +17,8 @@ in
   ];
 
   networking = {
-    hostId = "88b542fd";
-    hostName = "hl-ci-x-02";
+    hostId = "f2f10ce4";
+    hostName = "hl-ci-x-03";
   };
 
   nixpkgs = {
@@ -44,8 +44,6 @@ in
           executor = "docker";
           registrationFlags = [
             "--docker-pull-policy if-not-present"
-            # TODO(PigeonF): Figure out a way to drop this (e.g. different nspawn settings)
-            "--docker-cap-add SYS_ADMIN"
             "--docker-pull-policy if-not-present"
             "--docker-volumes /builds"
             "--docker-volumes /cache"
@@ -69,7 +67,7 @@ in
         openssh = {
           authorizedKeys = {
             keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9mRJO18hlbFWTOHMKUofE1BWvBsiHjbNhOwu5aCfcU"
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHlkgDzLhXjmncL47IiLRO5GfHqnEBhAv7AJOqiC51Nh"
             ];
           };
         };
