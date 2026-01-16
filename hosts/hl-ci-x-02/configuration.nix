@@ -39,7 +39,7 @@ in
       };
       services = {
         docker = {
-          authenticationTokenConfigFile = "/run/host/credentials/gitlab-runner-auth-config-docker";
+          authenticationTokenConfigFile = "/run/host/credentials/auth-config-docker";
           dockerImage = "docker.io/busybox:latest";
           executor = "docker";
           registrationFlags = [

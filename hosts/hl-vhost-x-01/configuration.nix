@@ -4,6 +4,7 @@
   nixos-facter-modules,
   sops-nix,
   self,
+  config,
   pkgs,
   ...
 }:
@@ -13,16 +14,13 @@ in
 {
   imports = [
     ./networking.nix
-    ./containers/hl-ci-x-01.nix
-    ./containers/hl-ci-x-02.nix
-    ./containers/hl-dev-x-01.nix
-    ./containers/hl-dev-x-02.nix
     homelab.nixosModules.mixins-boot
     homelab.nixosModules.mixins-common
     homelab.nixosModules.mixins-environment
     homelab.nixosModules.mixins-networking
     homelab.nixosModules.mixins-nix
     homelab.nixosModules.mixins-openssh
+    homelab.nixosModules.nspawn-containers
     sops-nix.nixosModules.sops
     {
       imports = [
@@ -79,6 +77,32 @@ in
     ];
   };
 
+  homelab = {
+    nspawn-containers = {
+      containers = {
+        "hl-dev-x-01" = {
+          enableDocker = true;
+          enableSudo = true;
+        };
+        "hl-dev-x-02" = {
+          ephemeral = true;
+        };
+        "hl-ci-x-01" = {
+          enableDocker = true;
+          secrets = {
+            "auth-config-docker" = config.sops.secrets."hl-ci-x-01/gitlab-runner/auth-config-docker".path;
+          };
+        };
+        "hl-ci-x-02" = {
+          enableDocker = true;
+          secrets = {
+            "auth-config-docker" = config.sops.secrets."hl-ci-x-02/gitlab-runner/auth-config-docker".path;
+          };
+        };
+      };
+    };
+  };
+
   networking = {
     hostId = "5ee11178";
     hostName = "hl-vhost-x-01";
@@ -87,6 +111,21 @@ in
   security = {
     sudo = {
       wheelNeedsPassword = false;
+    };
+  };
+
+  sops = {
+    secrets = {
+      "hl-ci-x-01/gitlab-runner/auth-config-docker" = {
+        sopsFile = ./secrets/hl-ci-x-01.yaml;
+        key = "gitlab-runner/auth-config-docker";
+        restartUnits = [ "systemd-nspawn@hl-ci-x-01.service" ];
+      };
+      "hl-ci-x-02/gitlab-runner/auth-config-docker" = {
+        sopsFile = ./secrets/hl-ci-x-02.yaml;
+        key = "gitlab-runner/auth-config-docker";
+        restartUnits = [ "systemd-nspawn@hl-ci-x-02.service" ];
+      };
     };
   };
 
@@ -103,6 +142,22 @@ in
   systemd = {
     additionalUpstreamSystemUnits = [ "systemd-vmspawn@.service" ];
     additionalUpstreamUserUnits = [ "systemd-vmspawn@.service" ];
+    services = {
+      "systemd-nspawn@hl-ci-x-01" = {
+        serviceConfig = {
+          CPUQuota = "400%";
+          MemoryHigh = "8G";
+          MemoryMax = "12G";
+        };
+      };
+      "systemd-nspawn@hl-ci-x-02" = {
+        serviceConfig = {
+          CPUQuota = "400%";
+          MemoryHigh = "8G";
+          MemoryMax = "12G";
+        };
+      };
+    };
   };
 
   users = {
