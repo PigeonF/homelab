@@ -52,6 +52,7 @@ in
             "--docker-volumes /var/lib/containers/cache"
             "--env FF_NETWORK_PER_BUILD=true"
             "--env FF_SCRIPT_SECTIONS=true"
+            "--env FF_ADAPTIVE_REQUEST_CONCURRENCY=true"
           ];
         };
       };
