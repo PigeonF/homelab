@@ -1,0 +1,13 @@
+diff --git a/executors/docker/docker.go b/executors/docker/docker.go
+index 77025e1e817a9c98..2d5dfc5813d66f0f 100644
+--- a/executors/docker/docker.go
++++ b/executors/docker/docker.go
+@@ -238,7 +238,7 @@ func createDockerConnection(ctx context.Context, opts common.ExecutorPrepareOpti
+ var version1_44 = version.Must(version.NewVersion("1.44"))
+ 
+ func (e *executor) getServiceVariables(serviceDefinition common.Image) []string {
+-	variables := e.Build.GetAllVariables().PublicOrInternal()
++	variables := e.Build.GetAllVariables()
+ 	variables = append(variables, serviceDefinition.Variables...)
+ 
+ 	return variables.Expand().StringList()
