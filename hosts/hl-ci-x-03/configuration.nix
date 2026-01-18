@@ -1,5 +1,6 @@
 {
   self,
+  pkgs,
   ...
 }:
 let
@@ -32,6 +33,7 @@ in
         enable = true;
         dates = "Mon,Wed,Fri";
       };
+      package = pkgs.patchedPackages.gitlab-runner;
       gracefulTermination = true;
       gracefulTimeout = "30s";
       settings = {
@@ -48,6 +50,10 @@ in
             "--docker-volumes /builds"
             "--docker-volumes /cache"
             "--docker-volumes /var/lib/containers/cache"
+            # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4748
+            "--docker-services-cap-add SYS_ADMIN"
+            # TODO(PigeonF): Adjust default docker seccomp filter to allow @keyring
+            "--docker-services-security-opt seccomp:unconfined"
             "--env FF_NETWORK_PER_BUILD=true"
             "--env FF_SCRIPT_SECTIONS=true"
             "--env FF_ADAPTIVE_REQUEST_CONCURRENCY=true"
