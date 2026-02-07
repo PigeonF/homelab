@@ -289,6 +289,9 @@
     "/var/log" = {
       neededForBoot = true;
     };
+    "/var/lib" = {
+      neededForBoot = true;
+    };
   };
 
   services = {

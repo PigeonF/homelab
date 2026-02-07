@@ -41,6 +41,8 @@
     };
     impermanence = {
       url = "github:nix-community/impermanence?ref=refs/heads/master";
+      inputs.home-manager.follows = "home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-facter-modules = {
       url = "github:nix-community/nixos-facter-modules?ref=refs/heads/main";
