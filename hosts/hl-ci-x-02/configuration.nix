@@ -56,10 +56,11 @@ in
             "--docker-services-cap-add SYS_ADMIN"
             # TODO(PigeonF): Adjust default docker seccomp filter to allow @keyring
             "--docker-services-security-opt seccomp:unconfined"
+            "--env FF_USE_ADAPTIVE_REQUEST_CONCURRENCY=true"
             "--env FF_NETWORK_PER_BUILD=true"
             "--env FF_SCRIPT_SECTIONS=true"
-            "--env FF_ADAPTIVE_REQUEST_CONCURRENCY=true"
             "--env FF_USE_INIT_WITH_DOCKER_EXECUTOR=true"
+            "--env FF_USE_NEW_BASH_EVAL_STRATEGY=true"
           ];
         };
       };
