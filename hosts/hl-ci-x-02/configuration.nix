@@ -59,6 +59,7 @@ in
             "--env FF_NETWORK_PER_BUILD=true"
             "--env FF_SCRIPT_SECTIONS=true"
             "--env FF_ADAPTIVE_REQUEST_CONCURRENCY=true"
+            "--env FF_USE_INIT_WITH_DOCKER_EXECUTOR=true"
           ];
         };
       };
