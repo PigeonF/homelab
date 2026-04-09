@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   ...
 }:
@@ -20,6 +19,11 @@ in
       # nixos-rebuild also requires a "system" profile
       ${config.nix.package.out}/bin/nix-env -p /nix/var/nix/profiles/system --set /run/current-system
     '';
+    loader = {
+      initScript = {
+        enable = true;
+      };
+    };
     specialFileSystems = {
       "/dev".enable = false;
       "/proc".enable = false;
@@ -42,11 +46,6 @@ in
     };
   };
   system = {
-    activationScripts = {
-      installInitScript = lib.mkForce ''
-        ${pkgs.coreutils}/bin/ln -fs "$systemConfig/init" /sbin/init
-      '';
-    };
     build = {
       tarball = makeTarball {
         extraArgs = "--owner=0";
@@ -63,15 +62,7 @@ in
             target = "/etc/os-release";
           }
         ];
-        extraCommands = pkgs.writeScript "extra-commands" ''
-          ${pkgs.coreutils}/bin/mkdir -p proc sys dev sbin
-          ${pkgs.coreutils}/bin/ln -sf /nix/var/nix/profiles/system/init sbin/init
-        '';
       };
-      installBootLoader = pkgs.writeScript "install-sbin-init.sh" ''
-        #!${pkgs.runtimeShell}
-        ${pkgs.coreutils}/bin/ln -fs "$1/init" /sbin/init
-      '';
     };
   };
   systemd = {
