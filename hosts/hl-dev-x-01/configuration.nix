@@ -27,7 +27,11 @@ in
     hostName = "hl-dev-x-01";
 
     firewall = {
-      allowedTCPPorts = [8000 8080 9000];
+      allowedTCPPorts = [
+        8000
+        8080
+        9000
+      ];
     };
   };
 
