@@ -18,8 +18,26 @@ in
     homelab.nixosModules.profiles-nspawn
   ];
 
+  documentation = {
+    dev = {
+      enable = true;
+    };
+    man = {
+      man-db = {
+        enable = false;
+      };
+      mandoc = {
+        enable = true;
+      };
+    };
+  };
+
   environment = {
-    systemPackages = [ pkgs.socat ];
+    systemPackages = [
+      pkgs.man-pages
+      pkgs.man-pages-posix
+      pkgs.socat
+    ];
   };
 
   networking = {
