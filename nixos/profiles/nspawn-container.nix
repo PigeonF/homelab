@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }:
 let
@@ -33,6 +34,7 @@ in
     };
   };
   console = {
+    # https://github.com/NixOS/nixpkgs/pull/480686
     enable = true;
   };
   networking = {
@@ -62,29 +64,37 @@ in
             target = "/etc/os-release";
           }
         ];
+        extraCommands = pkgs.writeScript "extra-commands" ''
+          ${pkgs.coreutils}/bin/mkdir -p proc sys dev sbin
+          ${pkgs.coreutils}/bin/ln -sf /nix/var/nix/profiles/system/init sbin/init
+        '';
       };
     };
   };
   systemd = {
-    # https://github.com/NixOS/nixpkgs/issues/405256
-    mounts = [
-      {
-        description = "Procfs for rootless containers";
-        after = [ "systemd-tmpfiles-setup.service" ];
-        before = [ "local-fs.target" ];
-        what = "proc";
-        where = "/proc2";
-        type = "proc";
-        options = "nosuid,noexec,nodev";
-        wantedBy = [ "multi-user.target" ];
-      }
-    ];
     network = {
       enable = true;
     };
-    tmpfiles = {
-      # TODO(PigeonF): Double check permissions
-      rules = [ "d /proc2 0555 root root -" ];
+    services = {
+      # https://github.com/NixOS/nixpkgs/issues/405256
+      nix-daemon = {
+        serviceConfig = {
+          ExecStart =
+            let
+              start-nix-daemon = pkgs.writeShellApplication {
+                name = "start-nix-daemon";
+                text = ''
+                  ${lib.getExe' pkgs.util-linux "mount"} proc -t proc /proc
+                  exec -a nix-daemon ${lib.getExe' config.nix.package "nix-daemon"} --daemon
+                '';
+              };
+            in
+            [
+              ""
+              "${lib.getExe' pkgs.util-linux "unshare"} -m ${lib.getExe start-nix-daemon}"
+            ];
+        };
+      };
     };
   };
 }

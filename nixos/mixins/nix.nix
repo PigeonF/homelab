@@ -1,25 +1,32 @@
 {
   self,
   config,
+  lib,
   pkgs,
   nixpkgs,
   nixpkgs-unstable,
   ...
 }:
+let
+  useLix = false; # TODO(PigeonF): Investigate why deploy fails when nix-daemon is not running
+  lixPackageSet = pkgs: pkgs.lixPackageSets.latest;
+in
 {
   nixpkgs = {
     overlays = [
       self.overlays.patchedPackages
-      (final: _prev: {
-        inherit (final.lixPackageSets.stable)
-          nixpkgs-review
+    ]
+    ++ lib.optional useLix (
+      final: _prev: {
+        inherit (lixPackageSet final)
+          colmena
           nix-direnv
           nix-eval-jobs
           nix-fast-build
-          colmena
+          nixpkgs-review
           ;
-      })
-    ];
+      }
+    );
   };
   nix = {
     channel = {
@@ -31,7 +38,7 @@
     optimise = {
       automatic = !config.boot.isContainer;
     };
-    package = pkgs.lixPackageSets.stable.lix;
+    package = lib.mkIf useLix (lixPackageSet pkgs).lix;
     registry = {
       nixpkgs = {
         flake = nixpkgs;
@@ -50,7 +57,6 @@
         "cgroups"
         "flakes"
         "nix-command"
-        "no-url-literals"
       ];
       sandbox = true;
       system-features = [ "uid-range" ];

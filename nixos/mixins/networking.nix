@@ -18,10 +18,12 @@
       # };
       resolved = {
         enable = true;
-        llmnr = "false";
-        extraConfig = ''
-          MulticastDNS=yes
-        '';
+        settings = {
+          Resolve = {
+            LLMNR = false;
+            MulticastDNS = true;
+          };
+        };
       };
       timesyncd = {
         enable = true;

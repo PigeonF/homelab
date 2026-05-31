@@ -25,6 +25,5 @@
         cleanOnBoot = true;
       };
     };
-
   };
 }
