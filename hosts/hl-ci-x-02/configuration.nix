@@ -40,21 +40,28 @@ in
         concurrent = 8;
       };
       services = {
-        cross = {
-          authenticationTokenConfigFile = "/run/host/credentials/auth-config-cross";
-          dockerImage = "docker.io/busybox:latest";
-          executor = "docker";
-          registrationFlags = [
-            "--docker-pull-policy if-not-present"
-            "--docker-volumes /builds"
-            "--docker-volumes /cache"
-            "--env FF_USE_ADAPTIVE_REQUEST_CONCURRENCY=true"
-            "--env FF_NETWORK_PER_BUILD=true"
-            "--env FF_SCRIPT_SECTIONS=true"
-            "--env FF_USE_INIT_WITH_DOCKER_EXECUTOR=true"
-            "--env FF_USE_NEW_BASH_EVAL_STRATEGY=true"
-          ];
-        };
+        cross =
+          let
+            macosxsdk = pkgs.callPackage ./macosxsdk.nix { };
+            winsysroot = pkgs.callPackage ./winsysroot.nix { };
+          in
+          {
+            authenticationTokenConfigFile = "/run/host/credentials/auth-config-cross";
+            dockerImage = "docker.io/busybox:latest";
+            executor = "docker";
+            registrationFlags = [
+              "--docker-pull-policy if-not-present"
+              "--docker-volumes /builds"
+              "--docker-volumes /cache"
+              "--docker-volumes ${macosxsdk}:/opt/macosxsdk:ro"
+              "--docker-volumes ${winsysroot}:/opt/winsysroot:ro"
+              "--env FF_USE_ADAPTIVE_REQUEST_CONCURRENCY=true"
+              "--env FF_NETWORK_PER_BUILD=true"
+              "--env FF_SCRIPT_SECTIONS=true"
+              "--env FF_USE_INIT_WITH_DOCKER_EXECUTOR=true"
+              "--env FF_USE_NEW_BASH_EVAL_STRATEGY=true"
+            ];
+          };
         docker = {
           authenticationTokenConfigFile = "/run/host/credentials/auth-config-docker";
           dockerImage = "docker.io/busybox:latest";
