@@ -40,12 +40,26 @@ in
         concurrent = 8;
       };
       services = {
+        cross = {
+          authenticationTokenConfigFile = "/run/host/credentials/auth-config-cross";
+          dockerImage = "docker.io/busybox:latest";
+          executor = "docker";
+          registrationFlags = [
+            "--docker-pull-policy if-not-present"
+            "--docker-volumes /builds"
+            "--docker-volumes /cache"
+            "--env FF_USE_ADAPTIVE_REQUEST_CONCURRENCY=true"
+            "--env FF_NETWORK_PER_BUILD=true"
+            "--env FF_SCRIPT_SECTIONS=true"
+            "--env FF_USE_INIT_WITH_DOCKER_EXECUTOR=true"
+            "--env FF_USE_NEW_BASH_EVAL_STRATEGY=true"
+          ];
+        };
         docker = {
           authenticationTokenConfigFile = "/run/host/credentials/auth-config-docker";
           dockerImage = "docker.io/busybox:latest";
           executor = "docker";
           registrationFlags = [
-            "--docker-pull-policy if-not-present"
             # TODO(PigeonF): Figure out a way to drop this (e.g. different nspawn settings)
             "--docker-cap-add SYS_ADMIN"
             "--docker-pull-policy if-not-present"

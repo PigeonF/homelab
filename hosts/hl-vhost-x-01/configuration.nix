@@ -96,6 +96,7 @@ in
         "hl-ci-x-02" = {
           enableDocker = true;
           secrets = {
+            "auth-config-cross" = config.sops.secrets."hl-ci-x-02/gitlab-runner/auth-config-cross".path;
             "auth-config-docker" = config.sops.secrets."hl-ci-x-02/gitlab-runner/auth-config-docker".path;
           };
         };
@@ -127,6 +128,9 @@ in
         restartUnits = [ "systemd-nspawn@hl-ci-x-01.service" ];
       };
       "hl-ci-x-02/gitlab-runner/auth-config-docker" = {
+        restartUnits = [ "systemd-nspawn@hl-ci-x-02.service" ];
+      };
+      "hl-ci-x-02/gitlab-runner/auth-config-cross" = {
         restartUnits = [ "systemd-nspawn@hl-ci-x-02.service" ];
       };
       "hl-ci-x-03/gitlab-runner/auth-config-docker" = {
