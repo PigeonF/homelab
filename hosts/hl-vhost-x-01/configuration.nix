@@ -20,7 +20,7 @@ in
     homelab.nixosModules.mixins-networking
     homelab.nixosModules.mixins-nix
     homelab.nixosModules.mixins-openssh
-    homelab.nixosModules.nspawn-containers
+    homelab.nixosModules.nspawn-host
     sops-nix.nixosModules.sops
     {
       imports = [
@@ -78,14 +78,19 @@ in
   };
 
   homelab = {
-    nspawn-containers = {
+    nspawn = {
       containers = {
         "hl-dev-x-01" = {
           enableDocker = true;
-          enableSudo = true;
-        };
-        "hl-dev-x-02" = {
-          ephemeral = true;
+          nspawnConfig = {
+            execConfig = {
+              # Enable `sudo`
+              NoNewPrivileges = false;
+            };
+            networkConfig = {
+              Bridge = "br-public";
+            };
+          };
         };
         "hl-ci-x-01" = {
           enableDocker = true;

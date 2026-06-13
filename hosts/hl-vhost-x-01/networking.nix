@@ -3,10 +3,10 @@
     network = {
       enable = true;
       netdevs = {
-        "30-br0" = {
+        "30-br-public" = {
           netdevConfig = {
-            Description = "Bridge device used by nspawn containers to connect to the homelab network";
-            Name = "br0";
+            Description = "Bridge used for nspawn containers that are reachable from the network";
+            Name = "br-public";
             Kind = "bridge";
           };
         };
@@ -15,17 +15,7 @@
         "40-enp170s0" = {
           matchConfig = {
             Name = "enp170s0";
-          };
-          networkConfig = {
-            Bridge = "br0";
-          };
-          linkConfig = {
-            RequiredForOnline = "enslaved";
-          };
-        };
-        "40-enp171s0" = {
-          matchConfig = {
-            Name = "enp171s0";
+            Type = "ether";
           };
           networkConfig = {
             MulticastDNS = "yes";
@@ -33,8 +23,17 @@
             UseDomains = "yes";
             IPv6PrivacyExtensions = "kernel";
           };
+        };
+        "40-enp171s0" = {
+          matchConfig = {
+            Name = "enp171s0";
+            Type = "ether";
+          };
+          networkConfig = {
+            Bridge = "br-public";
+          };
           linkConfig = {
-            RequiredForOnline = "yes";
+            RequiredForOnline = "enslaved";
           };
         };
         "40-wlp172s0" = {
@@ -45,15 +44,9 @@
             Unmanaged = "yes";
           };
         };
-        "50-br0" = {
+        "50-br-public" = {
           matchConfig = {
-            Name = "br0";
-          };
-          networkConfig = {
-            MulticastDNS = "yes";
-            DHCP = "yes";
-            UseDomains = "yes";
-            IPv6PrivacyExtensions = "kernel";
+            Name = "br-public";
           };
         };
       };

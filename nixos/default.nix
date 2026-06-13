@@ -12,7 +12,7 @@
       mixins-podman = ./mixins/podman.nix;
       profiles-nspawn = ./profiles/nspawn-container.nix;
 
-      nspawn-containers = ./modules/nspawn-containers.nix;
+      nspawn-host = ./modules/nspawn-host.nix;
     };
   };
 }
