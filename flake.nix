@@ -63,6 +63,7 @@
       self,
       systems,
       treefmt-nix,
+      nixpkgs,
       ...
     }:
     flake-parts.lib.mkFlake
@@ -83,6 +84,35 @@
         ];
 
         flake = {
+          lib = {
+            mkNixOsSystem =
+              args@{
+                specialArgs ? { },
+                homelabModulesPath ? ./nixos/modules,
+                ...
+              }:
+              nixpkgs.lib.nixosSystem (
+                {
+                  specialArgs = {
+                    inherit homelabModulesPath inputs;
+                  }
+                  // specialArgs;
+                }
+                // builtins.removeAttrs args [
+                  "specialArgs"
+                ]
+              );
+
+            deploy-rs = {
+              activateNspawn =
+                system: base:
+                inputs.deploy-rs.lib.${system}.activate.custom base.config.system.build.images.nspawn ''
+                  baseName="${base.config.system.build.images.nspawn.passthru.config.image.baseName}"
+                  importctl -m import-raw "$PROFILE/$baseName.raw" --force --quiet
+                  systemctl reload-or-restart "systemd-nspawn@$baseName"
+                '';
+            };
+          };
           overlays = {
             patchedPackages = final: _: {
               patchedPackages = {

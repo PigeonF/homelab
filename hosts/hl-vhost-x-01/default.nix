@@ -1,11 +1,9 @@
 {
-  lib,
   inputs,
   ...
 }:
 let
-  hl-vhost-x-01 = lib.nixosSystem {
-    specialArgs = inputs;
+  hl-vhost-x-01 = inputs.self.lib.mkNixOsSystem {
     modules = [
       ./configuration.nix
     ];

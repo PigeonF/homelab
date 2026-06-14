@@ -1,13 +1,15 @@
 {
-  self,
+  homelabModulesPath,
   pkgs,
+  inputs,
   ...
 }:
 let
-  homelab = self;
+  homelab = inputs.self;
 in
 {
   imports = [
+    (homelabModulesPath + "/profiles/base.nix")
     homelab.nixosModules.mixins-common
     homelab.nixosModules.mixins-docker
     homelab.nixosModules.mixins-environment

@@ -24,6 +24,9 @@ in
         type = lib.types.attrsOf (
           lib.types.submodule {
             options = {
+              autostart = mkEnableOption "at startup" // {
+                default = true;
+              };
               deployGroup = mkOption {
                 type = lib.types.str;
                 default = cfg.deployGroup;
@@ -142,14 +145,13 @@ in
               stopIfChanged = false;
               unitConfig = {
                 After = lib.mkIf hasSecrets [ "sops-nix.service" ];
-                ConditionPathExists = "/var/lib/machines/${name}";
+                # ConditionPathExists = "/var/lib/machines/${name}";
               };
-              wantedBy = [ "machines.target" ];
+              wantedBy = lib.optional value.autostart "machines.target";
             }
           ]
         )
       ) cfg.containers;
-
       nspawn = builtins.listToAttrs (
         lib.lists.imap0 (
           i:
@@ -194,6 +196,11 @@ in
           )
         ) (lib.mapAttrsToList lib.nameValuePair cfg.containers)
       );
+      tmpfiles = {
+        rules = [
+          "d /nix/var/nix/profiles/per-container 0755 root root -"
+        ];
+      };
     };
   };
 }

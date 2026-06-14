@@ -1,14 +1,19 @@
 {
-  home-manager,
-  dotfiles,
-  self,
+  inputs,
+  homelabModulesPath,
   ...
 }:
 let
+  inherit (inputs)
+    home-manager
+    dotfiles
+    self
+    ;
   homelab = self;
 in
 {
   imports = [
+    (homelabModulesPath + "/profiles/base.nix")
     home-manager.nixosModules.home-manager
     homelab.nixosModules.mixins-common
     homelab.nixosModules.mixins-docker

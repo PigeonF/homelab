@@ -1,22 +1,21 @@
 {
-  self,
   config,
   lib,
   pkgs,
-  nixpkgs,
-  nixpkgs-unstable,
+  inputs,
   ...
 }:
 let
   useLix = false; # TODO(PigeonF): Investigate why deploy fails when nix-daemon is not running
   lixPackageSet = pkgs: pkgs.lixPackageSets.latest;
+  inherit (inputs)
+    nixpkgs
+    nixpkgs-unstable
+    ;
 in
 {
   nixpkgs = {
-    overlays = [
-      self.overlays.patchedPackages
-    ]
-    ++ lib.optional useLix (
+    overlays = lib.optional useLix (
       final: _prev: {
         inherit (lixPackageSet final)
           colmena

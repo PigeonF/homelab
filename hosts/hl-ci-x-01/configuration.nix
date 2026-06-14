@@ -1,31 +1,19 @@
 {
-  self,
+  homelabModulesPath,
   pkgs,
   ...
 }:
-let
-  homelab = self;
-in
 {
   imports = [
-    homelab.nixosModules.mixins-common
-    homelab.nixosModules.mixins-docker
-    homelab.nixosModules.mixins-environment
-    homelab.nixosModules.mixins-networking
-    homelab.nixosModules.mixins-nix
-    homelab.nixosModules.mixins-openssh
-    homelab.nixosModules.profiles-nspawn
+    (homelabModulesPath + "/profiles/gitlab-ci-runner.nix")
   ];
-
   networking = {
     hostId = "417123ef";
     hostName = "hl-ci-x-01";
   };
-
   nixpkgs = {
     hostPlatform = "x86_64-linux";
   };
-
   services = {
     gitlab-runner = {
       enable = true;
@@ -38,6 +26,7 @@ in
       gracefulTimeout = "30s";
       settings = {
         concurrent = 8;
+        request_concurrency = 4;
       };
       services = {
         docker = {
@@ -53,7 +42,6 @@ in
             "--docker-services-cap-add SYS_ADMIN"
             # TODO(PigeonF): Adjust default docker seccomp filter to allow @keyring
             "--docker-services-security-opt seccomp:unconfined"
-            "--env FF_USE_ADAPTIVE_REQUEST_CONCURRENCY=true"
             "--env FF_NETWORK_PER_BUILD=true"
             "--env FF_SCRIPT_SECTIONS=true"
             "--env FF_USE_INIT_WITH_DOCKER_EXECUTOR=true"
@@ -63,23 +51,12 @@ in
       };
     };
   };
-
   system = {
     stateVersion = "26.05";
-    disableInstallerTools = true;
   };
-
-  users = {
-    users = {
-      root = {
-        openssh = {
-          authorizedKeys = {
-            keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJiUUmIKU5nJzA0ycOxrdGw7W4dlXJ6AaBt3WNslTl9J"
-            ];
-          };
-        };
-      };
-    };
+  virtualisation = {
+    diskSize =
+      32 * 1024 # MiB
+    ;
   };
 }

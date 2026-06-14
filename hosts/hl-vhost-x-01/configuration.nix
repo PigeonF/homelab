@@ -1,18 +1,22 @@
 {
-  disko,
-  impermanence,
-  nixos-facter-modules,
-  sops-nix,
-  self,
+  homelabModulesPath,
   config,
   pkgs,
+  inputs,
   ...
 }:
 let
-  homelab = self;
+  homelab = inputs.self;
+  inherit (inputs)
+    disko
+    impermanence
+    nixos-facter-modules
+    sops-nix
+    ;
 in
 {
   imports = [
+    (homelabModulesPath + "/profiles/base.nix")
     ./networking.nix
     homelab.nixosModules.mixins-boot
     homelab.nixosModules.mixins-common
@@ -97,6 +101,11 @@ in
           secrets = {
             "auth-config-docker" = config.sops.secrets."hl-ci-x-01/gitlab-runner/auth-config-docker".path;
           };
+          nspawnConfig = {
+            execConfig = {
+              Ephemeral = true;
+            };
+          };
         };
         "hl-ci-x-02" = {
           enableDocker = true;
@@ -104,11 +113,21 @@ in
             "auth-config-cross" = config.sops.secrets."hl-ci-x-02/gitlab-runner/auth-config-cross".path;
             "auth-config-docker" = config.sops.secrets."hl-ci-x-02/gitlab-runner/auth-config-docker".path;
           };
+          nspawnConfig = {
+            execConfig = {
+              Ephemeral = true;
+            };
+          };
         };
         "hl-ci-x-03" = {
           enableDocker = true;
           secrets = {
             "auth-config-docker" = config.sops.secrets."hl-ci-x-03/gitlab-runner/auth-config-docker".path;
+          };
+          nspawnConfig = {
+            execConfig = {
+              Ephemeral = true;
+            };
           };
         };
       };
@@ -186,6 +205,7 @@ in
     users = {
       administrator = {
         isNormalUser = true;
+        initialHashedPassword = "";
         extraGroups = [
           "wheel"
         ];
