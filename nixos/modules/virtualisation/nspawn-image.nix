@@ -19,16 +19,13 @@
               (modulesPath + "/virtualisation/disk-size-option.nix")
             ];
             config = {
-              assertions = [
-                {
-                  assertion = !config.system.etc.overlay.enable;
-                  message = "etc overlay breaks /etc/machine-id integration";
-                }
-              ];
               image = {
                 repart = {
                   name = config.system.image.id;
-                  seed = "random";
+                  seed =
+                    # NOTE(PigeonF): We don't need an actually secure random seed, so we just re-use the hostId.
+                    # We need a different seed for each image, else systemd-nspawn is not able to run two images at once.
+                    lib.strings.fixedWidthString 32 "0" (builtins.substring 0 32 config.networking.hostId);
                   sectorSize = 4096;
                   imageSize =
                     if config.virtualisation.diskSize == "auto" then
@@ -62,12 +59,6 @@
                 };
               };
               system = {
-                etc = {
-                  overlay = {
-                    # TODO(PigeonF): Figure out if there is a way to use this with nspawn
-                    enable = false;
-                  };
-                };
                 image = {
                   id = lib.mkDefault config.networking.hostName;
                 };
