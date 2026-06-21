@@ -1,4 +1,13 @@
 {
+  services = {
+    resolved = {
+      settings = {
+        Resolve = {
+          MulticastDNS = true;
+        };
+      };
+    };
+  };
   systemd = {
     network = {
       enable = true;
@@ -49,6 +58,10 @@
             Name = "br-public";
           };
         };
+      };
+      wait-online = {
+        # TODO(PigeonF): See if we can remove this
+        anyInterface = true;
       };
     };
   };

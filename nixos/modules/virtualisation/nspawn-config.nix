@@ -9,8 +9,11 @@
     boot = {
       isNspawnContainer = true;
       loader = {
-        initScript = {
-          enable = true;
+        grub = {
+          enable = false;
+        };
+        systemd-boot = {
+          enable = false;
         };
       };
       specialFileSystems = {

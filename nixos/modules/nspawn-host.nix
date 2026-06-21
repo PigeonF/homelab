@@ -38,7 +38,7 @@ in
                 default = { };
                 type = lib.types.attrsOf lib.types.str;
               };
-              serviceConfig = mkOption {
+              systemdConfig = mkOption {
                 type = lib.types.attrs;
                 default = { };
                 description = "Configuration passed to systemd-nspawn@.service";
@@ -129,7 +129,7 @@ in
         in
         lib.nameValuePair "systemd-nspawn@${name}" (
           lib.mkMerge [
-            value.serviceConfig
+            value.systemdConfig
             {
               overrideStrategy = "asDropin";
               restartTriggers = [

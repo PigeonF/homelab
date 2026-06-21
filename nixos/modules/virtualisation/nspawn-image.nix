@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   modulesPath,
   ...
@@ -19,6 +20,13 @@
               (modulesPath + "/virtualisation/disk-size-option.nix")
             ];
             config = {
+              boot = {
+                loader = {
+                  initScript = {
+                    enable = true;
+                  };
+                };
+              };
               image = {
                 repart = {
                   name = config.system.image.id;
@@ -58,16 +66,16 @@
                   };
                 };
               };
-              system = {
-                image = {
-                  id = lib.mkDefault config.networking.hostName;
-                };
-                nixos = {
-                  tags = [ "nspawn" ];
-                };
-              };
             };
           };
+      };
+    };
+    system = {
+      image = {
+        id = lib.mkDefault config.networking.hostName;
+      };
+      nixos = {
+        tags = [ "nspawn" ];
       };
     };
   };

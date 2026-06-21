@@ -24,7 +24,7 @@ in
           system = {
             user = "root";
             sshUser = "developer";
-            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos hl-dev-x-01;
+            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos hl-dev-x-01.config.system.build.images.lxc.passthru;
           };
         };
       };

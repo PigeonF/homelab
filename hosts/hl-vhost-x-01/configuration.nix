@@ -17,13 +17,8 @@ in
 {
   imports = [
     (homelabModulesPath + "/profiles/base.nix")
+    (homelabModulesPath + "/profiles/interactive.nix")
     ./networking.nix
-    homelab.nixosModules.mixins-boot
-    homelab.nixosModules.mixins-common
-    homelab.nixosModules.mixins-environment
-    homelab.nixosModules.mixins-networking
-    homelab.nixosModules.mixins-nix
-    homelab.nixosModules.mixins-openssh
     homelab.nixosModules.nspawn-host
     sops-nix.nixosModules.sops
     {
@@ -50,7 +45,6 @@ in
       };
     }
   ];
-
   boot = {
     binfmt = {
       emulatedSystems = [
@@ -69,7 +63,6 @@ in
       };
     };
   };
-
   environment = {
     etc = {
       "qemu/firmware".source = "${pkgs.qemu_kvm}/share/qemu/firmware";
@@ -80,7 +73,6 @@ in
       pkgs.virtiofsd
     ];
   };
-
   homelab = {
     nspawn = {
       containers = {
@@ -106,6 +98,13 @@ in
               Ephemeral = true;
             };
           };
+          systemdConfig = {
+            serviceConfig = {
+              CPUQuota = "200%";
+              MemoryHigh = "6G";
+              MemoryMax = "8G";
+            };
+          };
         };
         "hl-ci-x-02" = {
           enableDocker = true;
@@ -116,6 +115,13 @@ in
           nspawnConfig = {
             execConfig = {
               Ephemeral = true;
+            };
+          };
+          systemdConfig = {
+            serviceConfig = {
+              CPUQuota = "400%";
+              MemoryHigh = "8G";
+              MemoryMax = "12G";
             };
           };
         };
@@ -129,22 +135,26 @@ in
               Ephemeral = true;
             };
           };
+          systemdConfig = {
+            serviceConfig = {
+              CPUQuota = "200%";
+              MemoryHigh = "6G";
+              MemoryMax = "8G";
+            };
+          };
         };
       };
     };
   };
-
   networking = {
     hostId = "5ee11178";
     hostName = "hl-vhost-x-01";
   };
-
   security = {
     sudo = {
       wheelNeedsPassword = false;
     };
   };
-
   sops = {
     defaultSopsFile = ./secrets.yaml;
     secrets = {
@@ -162,45 +172,18 @@ in
       };
     };
   };
-
   services = {
     pcscd = {
       enable = true;
     };
   };
-
   system = {
     stateVersion = "26.05";
   };
-
   systemd = {
     additionalUpstreamSystemUnits = [ "systemd-vmspawn@.service" ];
     additionalUpstreamUserUnits = [ "systemd-vmspawn@.service" ];
-    services = {
-      "systemd-nspawn@hl-ci-x-01" = {
-        serviceConfig = {
-          CPUQuota = "400%";
-          MemoryHigh = "8G";
-          MemoryMax = "12G";
-        };
-      };
-      "systemd-nspawn@hl-ci-x-02" = {
-        serviceConfig = {
-          CPUQuota = "400%";
-          MemoryHigh = "8G";
-          MemoryMax = "12G";
-        };
-      };
-      "systemd-nspawn@hl-ci-x-03" = {
-        serviceConfig = {
-          CPUQuota = "200%";
-          MemoryHigh = "6G";
-          MemoryMax = "8G";
-        };
-      };
-    };
   };
-
   users = {
     users = {
       administrator = {
