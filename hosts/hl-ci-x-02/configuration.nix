@@ -32,7 +32,7 @@
         cross =
           let
             macosxsdk = pkgs.homelabPackages.macosxsdks;
-            winsysroot = pkgs.callPackage ./winsysroot.nix { };
+            winsysroot = pkgs.homelabPackages.winsysroot;
           in
           {
             authenticationTokenConfigFile = "/run/host/credentials/auth-config-cross";

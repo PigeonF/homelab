@@ -117,6 +117,7 @@
             homelabPackages = final: _: {
               homelabPackages = {
                 macosxsdks = final.callPackage ./overlays/macosxsdks { };
+                winsysroot = final.callPackage ./overlays/winsysroot { };
               };
             };
             patchedPackages = final: _: {
