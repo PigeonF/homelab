@@ -137,7 +137,20 @@
             ...
           }:
           {
+            _module.args.pkgs = import inputs.nixpkgs {
+              inherit system;
+              overlays = [
+                inputs.self.overlays.patchedPackages
+                inputs.self.overlays.homelabPackages
+              ];
+            };
+
             treefmt = import ./treefmt.nix;
+
+            packages = {
+              inherit (pkgs.patchedPackages) gitlab-runner;
+              inherit (pkgs.homelabPackages) macosxsdks winsysroot;
+            };
 
             checks =
               let
