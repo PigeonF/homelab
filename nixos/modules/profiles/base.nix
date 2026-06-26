@@ -38,6 +38,7 @@
       overlays = [
         # For patched gitlab-runner
         inputs.self.overlays.patchedPackages
+        inputs.self.overlays.homelabPackages
       ];
     };
     services = {

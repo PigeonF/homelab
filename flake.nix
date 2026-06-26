@@ -114,6 +114,11 @@
             };
           };
           overlays = {
+            homelabPackages = final: _: {
+              homelabPackages = {
+                macosxsdks = final.callPackage ./overlays/macosxsdks { };
+              };
+            };
             patchedPackages = final: _: {
               patchedPackages = {
                 gitlab-runner = final.callPackage ./overlays/gitlab-runner { };

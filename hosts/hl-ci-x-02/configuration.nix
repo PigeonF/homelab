@@ -31,7 +31,7 @@
       services = {
         cross =
           let
-            macosxsdk = pkgs.callPackage ./macosxsdk.nix { };
+            macosxsdk = pkgs.homelabPackages.macosxsdks;
             winsysroot = pkgs.callPackage ./winsysroot.nix { };
           in
           {
