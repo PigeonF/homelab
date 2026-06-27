@@ -114,12 +114,6 @@
             };
           };
           overlays = {
-            homelabPackages = final: _: {
-              homelabPackages = {
-                macosxsdks = final.callPackage ./overlays/macosxsdks { };
-                winsysroot = final.callPackage ./overlays/winsysroot { };
-              };
-            };
             patchedPackages = final: _: {
               patchedPackages = {
                 gitlab-runner = final.callPackage ./overlays/gitlab-runner { };
@@ -141,7 +135,8 @@
               inherit system;
               overlays = [
                 inputs.self.overlays.patchedPackages
-                inputs.self.overlays.homelabPackages
+                inputs.dotfiles.overlays.sdk-apple-darwin
+                inputs.dotfiles.overlays.sdk-pc-windows-msvc
               ];
             };
 
@@ -149,7 +144,6 @@
 
             packages = {
               inherit (pkgs.patchedPackages) gitlab-runner;
-              inherit (pkgs.homelabPackages) macosxsdks winsysroot;
             };
 
             checks =

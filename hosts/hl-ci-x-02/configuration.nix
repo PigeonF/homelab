@@ -29,27 +29,22 @@
         request_concurrency = 4;
       };
       services = {
-        cross =
-          let
-            sdk-macosx = pkgs.homelabPackages.macosxsdks;
-            sdk-msvc = pkgs.homelabPackages.winsysroot;
-          in
-          {
-            authenticationTokenConfigFile = "/run/host/credentials/auth-config-cross";
-            dockerImage = "docker.io/busybox:latest";
-            executor = "docker";
-            registrationFlags = [
-              "--docker-pull-policy if-not-present"
-              "--docker-volumes /builds"
-              "--docker-volumes /cache"
-              "--docker-volumes ${sdk-macosx}:/opt/sdks/macosx:ro"
-              "--docker-volumes ${sdk-msvc}:/opt/sdks/msvc:ro"
-              "--env FF_NETWORK_PER_BUILD=true"
-              "--env FF_SCRIPT_SECTIONS=true"
-              "--env FF_USE_INIT_WITH_DOCKER_EXECUTOR=true"
-              "--env FF_USE_NEW_BASH_EVAL_STRATEGY=true"
-            ];
-          };
+        cross = {
+          authenticationTokenConfigFile = "/run/host/credentials/auth-config-cross";
+          dockerImage = "docker.io/busybox:latest";
+          executor = "docker";
+          registrationFlags = [
+            "--docker-pull-policy if-not-present"
+            "--docker-volumes /builds"
+            "--docker-volumes /cache"
+            "--docker-volumes ${pkgs.sdk-apple-darwin}:/opt/sdks/macosx:ro"
+            "--docker-volumes ${pkgs.sdk-pc-windows-msvc}:/opt/sdks/msvc:ro"
+            "--env FF_NETWORK_PER_BUILD=true"
+            "--env FF_SCRIPT_SECTIONS=true"
+            "--env FF_USE_INIT_WITH_DOCKER_EXECUTOR=true"
+            "--env FF_USE_NEW_BASH_EVAL_STRATEGY=true"
+          ];
+        };
         docker = {
           authenticationTokenConfigFile = "/run/host/credentials/auth-config-docker";
           dockerImage = "docker.io/busybox:latest";

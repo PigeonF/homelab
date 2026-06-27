@@ -38,7 +38,8 @@
       overlays = [
         # For patched gitlab-runner
         inputs.self.overlays.patchedPackages
-        inputs.self.overlays.homelabPackages
+        inputs.dotfiles.overlays.sdk-apple-darwin
+        inputs.dotfiles.overlays.sdk-pc-windows-msvc
       ];
     };
     services = {
