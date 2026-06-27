@@ -31,8 +31,8 @@
       services = {
         cross =
           let
-            macosxsdk = pkgs.homelabPackages.macosxsdks;
-            winsysroot = pkgs.homelabPackages.winsysroot;
+            sdk-macosx = pkgs.homelabPackages.macosxsdks;
+            sdk-msvc = pkgs.homelabPackages.winsysroot;
           in
           {
             authenticationTokenConfigFile = "/run/host/credentials/auth-config-cross";
@@ -42,8 +42,8 @@
               "--docker-pull-policy if-not-present"
               "--docker-volumes /builds"
               "--docker-volumes /cache"
-              "--docker-volumes ${macosxsdk}:/opt/macosxsdk:ro"
-              "--docker-volumes ${winsysroot}:/opt/winsysroot:ro"
+              "--docker-volumes ${sdk-macosx}:/opt/sdks/macosx:ro"
+              "--docker-volumes ${sdk-msvc}:/opt/sdks/msvc:ro"
               "--env FF_NETWORK_PER_BUILD=true"
               "--env FF_SCRIPT_SECTIONS=true"
               "--env FF_USE_INIT_WITH_DOCKER_EXECUTOR=true"
