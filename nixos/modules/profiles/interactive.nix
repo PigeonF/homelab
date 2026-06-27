@@ -102,6 +102,7 @@
           "cgroups"
         ];
         sandbox = lib.mkDefault true;
+        store = lib.mkDefault "daemon";
         system-features = [ "uid-range" ];
         trusted-users = [ "@wheel" ];
         use-cgroups = lib.mkDefault (!config.boot.isNspawnContainer);

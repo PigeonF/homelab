@@ -41,7 +41,7 @@
                   name = "start-nix-daemon";
                   text = ''
                     ${lib.getExe' pkgs.util-linux "mount"} proc -t proc /proc
-                    exec -a nix-daemon ${lib.getExe' config.nix.package "nix-daemon"} --daemon
+                    exec -a nix-daemon ${lib.getExe' config.nix.package "nix-daemon"} --daemon --store local
                   '';
                 };
               in
