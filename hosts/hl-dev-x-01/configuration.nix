@@ -119,6 +119,13 @@
       wheelNeedsPassword = false;
     };
   };
+  services = {
+    dockerRegistry = {
+      enable = true;
+      enableGarbageCollect = true;
+      enableDelete = true;
+    };
+  };
   system = {
     stateVersion = "26.05";
   };
