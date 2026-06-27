@@ -121,7 +121,7 @@
   };
   services = {
     dockerRegistry = {
-      enable = true;
+      enable = false;
       enableGarbageCollect = true;
       enableDelete = true;
     };
