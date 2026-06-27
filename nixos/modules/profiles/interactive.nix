@@ -85,6 +85,12 @@
         nixpkgs-unstable = {
           flake = lib.mkDefault inputs.nixpkgs-unstable;
         };
+        self = {
+          flake = inputs.self;
+        };
+        dotfiles = {
+          flake = inputs.dotfiles;
+        };
       };
       settings = {
         # nspawn containers do not have enough UIDs assigned for this to work.
