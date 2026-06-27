@@ -138,6 +138,22 @@
         };
       };
     };
+    systemd = {
+      services = {
+        nix-daemon = {
+          serviceConfig = {
+            ExecStart =
+              let
+                cfg = config.nix;
+              in
+              [
+                ""
+                "${cfg.package.out}/bin/nix-daemon --daemon --store local"
+              ];
+          };
+        };
+      };
+    };
     time = {
       timeZone = lib.mkDefault "Europe/Berlin";
     };
