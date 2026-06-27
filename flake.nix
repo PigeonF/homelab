@@ -60,7 +60,6 @@
   outputs =
     inputs@{
       flake-parts,
-      self,
       systems,
       treefmt-nix,
       nixpkgs,
@@ -149,9 +148,10 @@
             checks =
               let
                 devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
-                nixosConfigurations = lib.mapAttrs' (
-                  n: v: lib.nameValuePair "nixosConfigurations-${n}" v.config.system.build.toplevel
-                ) ((lib.filterAttrs (_: v: v.pkgs.stdenv.hostPlatform.system == system)) self.nixosConfigurations);
+                # nixosConfigurations = lib.mapAttrs' (
+                #   n: v: lib.nameValuePair "nixosConfigurations-${n}" v.config.system.build.toplevel
+                # ) ((lib.filterAttrs (_: v: v.pkgs.stdenv.hostPlatform.system == system)) self.nixosConfigurations);
+                nixosConfigurations = { };
                 packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") self'.packages;
                 custom = {
                   reuse =

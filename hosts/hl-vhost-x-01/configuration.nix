@@ -143,6 +143,25 @@ in
             };
           };
         };
+        "hl-svc-x-01" = {
+          enableDocker = true;
+          secrets = {
+            "traefik-acme" = config.sops.secrets."hl-svc-x-01/traefik/acme".path;
+          };
+          nspawnConfig = {
+            networkConfig = {
+              Bridge = "br-public";
+            };
+          };
+          systemdConfig = {
+            serviceConfig = {
+              CPUQuota = "200%";
+              MemoryHigh = "6G";
+              MemoryMax = "8G";
+            };
+          };
+        };
+
       };
     };
   };
@@ -169,6 +188,9 @@ in
       };
       "hl-ci-x-03/gitlab-runner/auth-config-docker" = {
         restartUnits = [ "systemd-nspawn@hl-ci-x-03.service" ];
+      };
+      "hl-svc-x-01/traefik/acme" = {
+        restartUnits = [ "systemd-nspawn@hl-svc-x-01.service" ];
       };
     };
   };
