@@ -129,6 +129,15 @@
   system = {
     stateVersion = "26.05";
   };
+  systemd = {
+    services = {
+      docker-registry = {
+        environment = {
+          OTEL_TRACES_EXPORTER = "none";
+        };
+      };
+    };
+  };
   users = {
     users = {
       developer = {
