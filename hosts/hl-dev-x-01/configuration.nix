@@ -24,6 +24,7 @@
     };
   };
   environment = {
+    enableDebugInfo = true;
     systemPackages = [
       pkgs.man-pages
       pkgs.man-pages-posix
@@ -124,6 +125,9 @@
       enable = false;
       enableGarbageCollect = true;
       enableDelete = true;
+    };
+    nixseparatedebuginfod2 = {
+      enable = true;
     };
   };
   system = {
