@@ -49,7 +49,12 @@ in
     binfmt = {
       emulatedSystems = [
         "aarch64-linux"
+        "armv6l-linux"
+        "armv7l-linux"
+        "i686-linux"
+        "powerpc64le-linux"
         "riscv64-linux"
+        "s390x-linux"
       ];
       preferStaticEmulators = true;
     };
