@@ -1,6 +1,7 @@
 {
   config,
   homelabModulesPath,
+  lib,
   pkgs,
   ...
 }:
@@ -141,6 +142,9 @@
         };
       };
     };
+    tmpfiles.rules = [
+      "L+ /bin/bash - - - - ${lib.getExe pkgs.bash}"
+    ];
   };
   users = {
     users = {
