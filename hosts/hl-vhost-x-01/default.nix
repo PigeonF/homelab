@@ -4,6 +4,7 @@
 }:
 let
   hl-vhost-x-01 = inputs.self.lib.mkNixOsSystem {
+    nixpkgs = inputs.nixpkgs-unstable;
     modules = [
       ./configuration.nix
     ];

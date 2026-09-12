@@ -88,6 +88,7 @@
               args@{
                 specialArgs ? { },
                 homelabModulesPath ? ./nixos/modules,
+                nixpkgs ? nixpkgs,
                 ...
               }:
               nixpkgs.lib.nixosSystem (
@@ -98,6 +99,7 @@
                   // specialArgs;
                 }
                 // builtins.removeAttrs args [
+                  "nixpkgs"
                   "specialArgs"
                 ]
               );

@@ -210,6 +210,7 @@ in
   users = {
     users = {
       administrator = {
+        autoSubUidGidRange = true;
         isNormalUser = true;
         initialHashedPassword = "";
         extraGroups = [

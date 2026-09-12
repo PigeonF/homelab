@@ -79,7 +79,7 @@
         automatic = lib.mkDefault (!config.boot.isContainer);
       };
       registry = {
-        nixpkgs = {
+        nixpkgs = lib.mkIf (!config.nixpkgs.flake.setFlakeRegistry) {
           flake = lib.mkDefault inputs.nixpkgs;
         };
         nixpkgs-unstable = {
