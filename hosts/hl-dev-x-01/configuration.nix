@@ -149,6 +149,7 @@
   users = {
     users = {
       developer = {
+        autoSubUidGidRange = true;
         isNormalUser = true;
         extraGroups = [
           "wheel"
