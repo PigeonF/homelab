@@ -62,7 +62,6 @@
       flake-parts,
       systems,
       treefmt-nix,
-      nixpkgs,
       ...
     }:
     flake-parts.lib.mkFlake
@@ -88,7 +87,7 @@
               args@{
                 specialArgs ? { },
                 homelabModulesPath ? ./nixos/modules,
-                nixpkgs ? nixpkgs,
+                nixpkgs ? inputs.nixpkgs,
                 ...
               }:
               nixpkgs.lib.nixosSystem (
