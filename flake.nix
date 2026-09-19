@@ -27,6 +27,17 @@
       inputs.systems.follows = "systems";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
+    dotfiles-unstable = {
+      url = "github:PigeonF/dotfiles?ref=refs/heads/main";
+      inputs.deploy-rs.follows = "deploy-rs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.home-manager.follows = "home-manager-unstable";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
+      inputs.systems.follows = "systems";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
     flake-parts = {
       url = "github:hercules-ci/flake-parts?ref=refs/heads/main";
       inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -38,6 +49,10 @@
     home-manager = {
       url = "github:nix-community/home-manager?ref=refs/heads/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    home-manager-unstable = {
+      url = "github:nix-community/home-manager?ref=refs/heads/master";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     impermanence = {
       url = "github:nix-community/impermanence?ref=refs/heads/master";
@@ -75,14 +90,23 @@
 
         imports = [
           treefmt-nix.flakeModule
-          ./hosts
+          # ./hosts
+          ./hosts/hl-vhost-01
           ./installer
+          ./machines/hl-ci
+          ./machines/hl-dev
+          ./machines/hl-svc-01
           ./modules
-          ./nixos
+          # ./nixos
+          ./pkgs/deploy-machine
+          ./pkgs/systemd-vmspawn-ssh-proxy
         ];
 
         flake = {
           lib = {
+            mkNixOsSystem' = import ./lib/mk-nixos-configuration.nix { inherit inputs; };
+            mkApp = import ./lib/mk-app.nix { lib = inputs.nixpkgs.lib; };
+            deploy-rs' = import ./lib/deploy-rs.nix { inherit inputs; };
             mkNixOsSystem =
               args@{
                 specialArgs ? { },
@@ -106,12 +130,17 @@
             deploy-rs = {
               activateNspawn =
                 system: base:
-                inputs.deploy-rs.lib.${system}.activate.custom base.config.system.build.images.nspawn ''
-                  baseName="${base.config.system.build.images.nspawn.passthru.config.image.baseName}"
+                inputs.deploy-rs.lib.${system}.activate.custom base.config.system.build.images.nspawn-image ''
+                  baseName="${base.config.system.build.images.nspawn-image.passthru.config.image.baseName}"
                   importctl -m import-raw "$PROFILE/$baseName.raw" --force --quiet
                   systemctl reload-or-restart "systemd-nspawn@$baseName"
                 '';
             };
+          };
+          nixosModules = {
+            nspawn' = ./modules/nixos/nspawn.nix;
+            nspawnImage = ./modules/nixos/image/nspawn.nix;
+            vmspawnImage = ./modules/nixos/image/vmspawn.nix;
           };
           overlays = {
             patchedPackages = final: _: {
@@ -133,8 +162,7 @@
           {
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
-              overlays = [
-                inputs.self.overlays.patchedPackages
+              overlays = builtins.attrValues inputs.self.overlays ++ [
                 inputs.dotfiles.overlays.sdk-apple-darwin
                 inputs.dotfiles.overlays.sdk-pc-windows-msvc
               ];

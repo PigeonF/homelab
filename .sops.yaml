@@ -5,13 +5,13 @@ keys:
   users:
     pigeonf: &pigeonf "age1nfa5tsvl33wmex09mj27kzcrl25xz5h74sg64rka2cekhjrd5frsnsymry"
   hosts:
-    hl-vhost-x-01: &hl-vhost-x-01 "age19ag45w5lgwkqk59svvvhs33fx0phxz4jml52xmlyqzjll9um33sqyxqgfh"
+    hl-vhost-01: &hl-vhost-01 "age19ag45w5lgwkqk59svvvhs33fx0phxz4jml52xmlyqzjll9um33sqyxqgfh"
 creation_rules:
   - key_groups:
       - age:
           - *pigeonf
-          - *hl-vhost-x-01
-    path_regex: ^hosts/hl-vhost-x-01/(secrets/.+\.yaml|secrets\.yaml)$
+          - *hl-vhost-01
+    path_regex: ^secrets/hl-vhost-01\.yaml$
 stores:
   yaml:
     indent: 2
