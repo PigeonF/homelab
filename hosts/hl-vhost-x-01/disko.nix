@@ -83,10 +83,6 @@
                   btrfs subvolume snapshot -r "$MNTPOINT/" "$MNTPOINT/rootfs-blank"
                 '';
                 postMountHook = ''
-                  ls -la /mnt
-                  ls -la /mnt/persist
-
-                  test -d  /mnt/
                   mkdir -p /mnt/persist/boot/etc/ssh/
                   if [ ! -f /mnt/persist/boot/etc/ssh/ssh_host_rsa_key ]; then
                     ssh-keygen -t rsa -N "" -f /mnt/persist/boot/etc/ssh/ssh_host_rsa_key
@@ -152,9 +148,22 @@
                       "noatime"
                     ];
                   };
-                  "/var/lib/chroots" = { };
-                  "/var/lib/containers" = { };
-                  "/var/lib/machines" = { };
+                  "/var/lib/containers" = {
+                    mountpoint = "/var/lib/containers";
+                    mountOptions = [
+                      "compress=zstd"
+                      "ssd"
+                      "noatime"
+                    ];
+                  };
+                  "/var/lib/machines" = {
+                    mountpoint = "/var/lib/machines";
+                    mountOptions = [
+                      "compress=zstd"
+                      "ssd"
+                      "noatime"
+                    ];
+                  };
                 };
               };
             };

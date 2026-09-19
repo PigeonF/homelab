@@ -9,9 +9,12 @@ path = [
     "flake.nix",
     "hosts/**",
     "installer/**",
+    "lib/**",
+    "machines/**",
     "modules/**",
     "nixos/**",
     "overlays/**",
+    "pkgs/**",
     "treefmt.nix",
 ]
 SPDX-FileCopyrightText = "Jonas Fierlings <fnoegip@gmail.com>"

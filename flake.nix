@@ -77,12 +77,17 @@
           treefmt-nix.flakeModule
           ./hosts
           ./installer
+          ./machines/hl-dev
           ./modules
           ./nixos
+          ./pkgs/deploy-machine
         ];
 
         flake = {
           lib = {
+            mkNixOsSystem' = import ./lib/mk-nixos-configuration.nix { inherit inputs; };
+            mkApp = import ./lib/mk-app.nix { lib = inputs.nixpkgs.lib; };
+            deploy-rs' = import ./lib/deploy-rs.nix { inherit inputs; };
             mkNixOsSystem =
               args@{
                 specialArgs ? { },
@@ -106,20 +111,42 @@
             deploy-rs = {
               activateNspawn =
                 system: base:
-                inputs.deploy-rs.lib.${system}.activate.custom base.config.system.build.images.nspawn ''
-                  baseName="${base.config.system.build.images.nspawn.passthru.config.image.baseName}"
+                inputs.deploy-rs.lib.${system}.activate.custom base.config.system.build.images.nspawn-image ''
+                  baseName="${base.config.system.build.images.nspawn-image.passthru.config.image.baseName}"
                   importctl -m import-raw "$PROFILE/$baseName.raw" --force --quiet
                   systemctl reload-or-restart "systemd-nspawn@$baseName"
                 '';
             };
           };
-          overlays = {
-            patchedPackages = final: _: {
-              patchedPackages = {
-                gitlab-runner = final.callPackage ./overlays/gitlab-runner { };
+          nixosModules = {
+            nspawnImage = ./modules/nixos/image/nspawn.nix;
+            vmspawnImage = ./modules/nixos/image/vmspawn.nix;
+          };
+          overlays =
+            let
+              lib = inputs.nixpkgs.lib;
+              descend =
+                root: call:
+                lib.pipe root [
+                  builtins.readDir
+                  (lib.filterAttrs (_: type: type == "directory"))
+                  (builtins.mapAttrs (name: _: call name))
+                ];
+            in
+            {
+              packages =
+                final: _:
+                let
+                  root = ./pkgs;
+                  call = name: final.callPackage (root + "/${name}/package.nix") { };
+                in
+                descend root call;
+              patchedPackages = final: _: {
+                patchedPackages = {
+                  gitlab-runner = final.callPackage ./overlays/gitlab-runner { };
+                };
               };
             };
-          };
         };
 
         perSystem =

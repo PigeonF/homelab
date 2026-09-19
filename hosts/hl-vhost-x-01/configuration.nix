@@ -206,6 +206,13 @@ in
   systemd = {
     additionalUpstreamSystemUnits = [ "systemd-vmspawn@.service" ];
     additionalUpstreamUserUnits = [ "systemd-vmspawn@.service" ];
+    services."systemd-vmspawn@" = {
+      path = [
+        pkgs.openssh # ssh-keygen
+        pkgs.qemu_kvm
+        pkgs.virtiofsd
+      ];
+    };
   };
   users = {
     users = {

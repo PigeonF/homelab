@@ -32,16 +32,19 @@
       pkgs.socat
     ];
   };
-  image.modules.lxc = {
-    config = {
-      image = {
-        baseName = "hl-dev-x-01";
-      };
-      systemd = {
-        enableStrictShellChecks = false;
+  image.modules.lxc =
+    { modulesPath, ... }:
+    {
+      imports = [ (modulesPath + "/virtualisation/lxc-container.nix") ];
+      config = {
+        image = {
+          baseName = "hl-dev-x-01";
+        };
+        systemd = {
+          enableStrictShellChecks = false;
+        };
       };
     };
-  };
   # TODO(PigeonF): Currently does not work correctly at runtime because of mount
   # permission issues. Use lxc image instead and import-tar.
   image.modules.nspawn =

@@ -9,7 +9,7 @@
   config = {
     image = {
       modules = {
-        nspawn =
+        nspawn-image =
           {
             config,
             ...
